@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import uuid
 from datetime import datetime
 
@@ -10,12 +8,12 @@ class BaseModel:
         self.updated_at = datetime.now()
 
     def save(self):
-        """Met à jour l'horodatage de modification."""
+        """Update the updated_at timestamp whenever the object is modified"""
         self.updated_at = datetime.now()
 
     def update(self, data):
-        """Met à jour les attributs à partir d'un dictionnaire."""
+        """Update the attributes of the object based on the provided dictionary"""
         for key, value in data.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-        self.save()
+        self.save()  # Update the updated_at timestamp
