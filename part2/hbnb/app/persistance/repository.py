@@ -1,8 +1,6 @@
-#!/usr/bin/python3
-
 from abc import ABC, abstractmethod
 
-class IRepository(ABC):
+class Repository(ABC):
     @abstractmethod
     def add(self, obj):
         pass
@@ -23,7 +21,12 @@ class IRepository(ABC):
     def delete(self, obj_id):
         pass
 
-class InMemoryRepository(IRepository):
+    @abstractmethod
+    def get_by_attribute(self, attr_name, attr_value):
+        pass
+
+
+class InMemoryRepository(Repository):
     def __init__(self):
         self._storage = {}
 
@@ -39,10 +42,11 @@ class InMemoryRepository(IRepository):
     def update(self, obj_id, data):
         obj = self.get(obj_id)
         if obj:
-            for key, value in data.items():
-                setattr(obj, key, value)
-        return obj
+            obj.update(data)
 
     def delete(self, obj_id):
         if obj_id in self._storage:
             del self._storage[obj_id]
+
+    def get_by_attribute(self, attr_name, attr_value):
+        return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
