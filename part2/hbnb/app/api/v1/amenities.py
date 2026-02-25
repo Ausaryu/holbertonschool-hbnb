@@ -31,14 +31,21 @@ class AmenityList(Resource):
         amenities = facade.get_all_amenities()
         return [{'id': u.id, 'name': u.name} for u in amenities], 200
 
+
 @api.route('/<amenity_id>')
 class AmenityResource(Resource):
     @api.response(200, 'Amenity details retrieved successfully')
     @api.response(404, 'Amenity not found')
     def get(self, amenity_id):
         """Get amenity details by ID"""
-        # Placeholder for the logic to retrieve an amenity by ID
-        pass
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            api.abort(404, f"Amenity {amenity_id} not found")
+
+        return {
+            "id": amenity.id,
+            "name": amenity.name
+        }, 200
 
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
@@ -46,5 +53,13 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
         """Update an amenity's information"""
-        # Placeholder for the logic to update an amenity by ID
-        pass
+        amenity_data = api.payload
+
+        updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        if not updated_amenity:
+            api.abort(404, f"Amenity {amenity_id} not found")
+
+        return {
+            "id": updated_amenity.id,
+            "name": updated_amenity.name
+        }, 200
