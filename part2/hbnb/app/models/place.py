@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from app.models.base_model import BaseModel
 
 class Place(BaseModel):
@@ -13,6 +11,28 @@ class Place(BaseModel):
         self.owner = owner  # Instance de User
         self.amenities = [] # Liste d'instances d'Amenity
         self.reviews = []   # Liste d'instances de Review
+
+    @staticmethod
+    def validate_place_data(price, latitude, longitude):
+        """Méthode de validation pour garantir l'intégrité des données métier"""
+        if price <= 0:
+            raise ValueError("Price must be a positive value.")
+        if not (-90.0 <= latitude <= 90.0):
+            raise ValueError("Latitude must be between -90.0 and 90.0.")
+        if not (-180.0 <= longitude <= 180.0):
+            raise ValueError("Longitude must be between -180.0 and 180.0.")
+
+    def update(self, data):
+        """Surcharge de la méthode update pour inclure la validation lors de la modif"""
+        # Vérifier si les données sensibles sont présentes pour les valider
+        new_price = data.get('price', self.price)
+        new_lat = data.get('latitude', self.latitude)
+        new_long = data.get('longitude', self.longitude)
+
+        self.validate_place_data(new_price, new_lat, new_long)
+
+        # Appel de la méthode parente pour mettre à jour les autres champs
+        super().update(data)
 
     def add_amenity(self, amenity):
         if amenity not in self.amenities:
