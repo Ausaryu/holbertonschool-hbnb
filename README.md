@@ -1,314 +1,624 @@
-# 🏗 HBnB Evolution – Technical Documentation (Part 1)
+# 🏗 HBnB Evolution
 
 ---
 
-# 📘 1. Introduction
 
-## 🎯 Objective
+## 📑 Table of Contents
 
-This document defines the complete architectural and technical blueprint of the **HBnB Evolution** application.
-
-It provides:
-
-- The high-level layered architecture
-- The detailed business logic design
-- The interaction flow across layers
-- The UML diagrams required to guide implementation
-
-This documentation serves as the reference foundation for future implementation phases.
-
----
-
-# 🧱 2. High-Level Architecture
-
-## 📦 Architecture Overview
-
-HBnB Evolution follows a strict **three-layer architecture**:
-
-1. **Presentation Layer**
-2. **Business Logic Layer**
-3. **Persistence Layer**
-
-Communication between the Presentation Layer and the Business Logic Layer is controlled through a **Facade pattern** to ensure separation of concerns and dependency direction control.
+- [Overview](#-overview)
+- [Project Scope](#1️⃣-project-scope)
+- [High-Level Architecture](#2️⃣-high-level-architecture)
+- [Business Logic Layer](#3️⃣-business-logic-layer)
+- [API Interaction Sequence Diagrams](#4️⃣-api-interaction-sequence-diagrams)
+- [Architectural Principles Applied](#5️⃣-architectural-principles-applied)
+- [Assumptions & Design Decisions](#6️⃣-assumptions--design-decisions)
+- [Conclusion](#7️⃣-conclusion)
+- [Part 2 — Implementation](#-part-2--implementation-of-business-logic--rest-api)
+- [Authors](#-authors)
 
 ---
 
-## 🔹 Layer Responsibilities
+## 📘 Overview
 
-### 1️⃣ Presentation Layer
+This document provides the complete architectural and technical foundation of the **HBnB Evolution** application.
 
-Responsibilities:
+It consolidates:
 
-- Expose API endpoints
-- Handle HTTP requests and responses
-- Perform input validation (format-level only)
-- Call the Business Logic via the Facade
-- Return serialized responses
+- High-level architecture
+- Business Logic design
+- API interaction sequence diagrams
+- Design decisions and applied principles
 
-Constraints:
-
-- No business rules
-- No direct database access
+The objective is to ensure clarity, strict alignment with project requirements, and readiness for implementation in subsequent phases.
 
 ---
 
-### 2️⃣ Business Logic Layer
+## 1️⃣ Project Scope
 
-Responsibilities:
+HBnB Evolution is a simplified AirBnB-like application allowing:
 
-- Contain domain models
-- Implement business rules
-- Validate domain constraints
-- Manage entity relationships
-- Coordinate persistence operations via repositories
+- **User Management** (registration, update, deletion, administrator role)
+- **Place Management** (creation, update, deletion, listing)
+- **Review Management** (creation, update, deletion, listing by place)
+- **Amenity Management** (creation, update, deletion, listing)
 
-Constraints:
+The system follows:
 
-- No HTTP handling
-- No direct knowledge of client requests
+- **Layered Architecture**
+- **Facade Design Pattern**
+- Controlled dependency direction between layers
 
----
-
-### 3️⃣ Persistence Layer
-
-Responsibilities:
-
-- Store and retrieve data from the database
-- Implement repository or DAO pattern
-- Abstract database access
-
-Constraints:
-
-- No business logic
-- No API logic
+All entities are uniquely identified using **UUID4** and include audit fields (`created_at`, `updated_at`).
 
 ---
 
-# 🧠 3. Business Logic – Class Design
+## 2️⃣ High-Level Architecture
 
-All entities share the following common attributes:
+## 📦 High-Level Package Diagram
 
-- `id: UUID`
+<p align="center">
+  <img src="./docs/high_level/High_level_package_diagram_HBNB.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/high_level/High_level_package_diagram_HBNB.pdf">📄 View Full PDF Version</a>
+</p>
+
+## 🎯 Purpose
+
+This diagram illustrates:
+
+- The three-layer architecture
+- Clear separation of responsibilities
+- Controlled communication via the Facade pattern
+
+### Layers
+
+### 1️⃣ Presentation Layer (API / Controllers)
+- Handles HTTP requests and responses
+- Performs input validation
+- Delegates use cases to the Facade
+- Contains no domain logic
+
+### 2️⃣ Business Logic Layer (Models + Facade)
+- Contains domain entities
+- Implements business rules
+- Coordinates use cases
+- Enforces domain integrity
+
+### 3️⃣ Persistence Layer (Repositories)
+- Responsible for data storage and retrieval
+- Abstracted from business logic
+- Ensures database independence
+
+The Presentation Layer communicates exclusively with the Business Logic Layer through the **Facade**.
+
+---
+
+## 3️⃣ Business Logic Layer
+
+## 📊 Class Diagram
+
+<p align="center">
+  <img src="./docs/class_diagram/Class_diagram_for_business_Logic_Layer_HBNB.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/class_diagram/Class_diagram_for_business_Logic_Layer_HBNB.pdf">📄 View Full PDF Version</a>
+</p>
+
+## 🎯 Purpose
+
+This diagram defines:
+
+- Core domain entities
+- Attributes (strictly aligned with requirements)
+- Inheritance hierarchy
+- Relationships and multiplicities
+- Business constraints
+
+---
+
+## 🔑 Core Entities
+
+### BaseModel (Abstract)
+
+Shared attributes for all entities:
+
+- `id: UUID4`
 - `created_at: datetime`
 - `updated_at: datetime`
 
----
+Ensures:
 
-## 👤 User Entity
-
-### Attributes
-
-- id
-- first_name
-- last_name
-- email
-- password
-- is_admin (boolean)
-- created_at
-- updated_at
-
-### Responsibilities
-
-- Register
-- Update profile
-- Delete account
-
-### Relationships
-
-- One User → Many Places
-- One User → Many Reviews
+- Unique identification
+- Audit tracking
+- Reusability
 
 ---
 
-## 🏠 Place Entity
+### User
 
-### Attributes
+Attributes:
 
-- id
-- title
-- description
-- price
-- latitude
-- longitude
-- owner_id (User)
-- created_at
-- updated_at
+- `id: UUID4`
+- `first_name: str`
+- `last_name: str`
+- `email: str`
+- `password: str`
+- `is_admin: bool`
+- `created_at: datetime`
+- `updated_at: datetime`
 
-### Responsibilities
+Responsibilities:
 
-- Create place
-- Update place
-- Delete place
-- List places
-
-### Relationships
-
-- Many Places → One User (owner)
-- One Place → Many Reviews
-- Many-to-Many with Amenity
+- Can register, update, and delete profile
+- Owns multiple Places
+- Writes multiple Reviews
 
 ---
 
-## ⭐ Review Entity
+### Place
 
-### Attributes
+Attributes:
 
-- id
-- rating
-- comment
-- user_id
-- place_id
-- created_at
-- updated_at
+- `id: UUID4`
+- `title: str`
+- `description: str`
+- `price: float`
+- `latitude: float`
+- `longitude: float`
+- `owner_id: UUID4`
+- `created_at: datetime`
+- `updated_at: datetime`
 
-### Responsibilities
+Responsibilities:
 
-- Create review
-- Update review
-- Delete review
-- List reviews by place
-
-### Relationships
-
-- Many Reviews → One User
-- Many Reviews → One Place
+- Belongs to a User
+- Can be created, updated, deleted, and listed
+- Linked to multiple Amenities
+- Receives multiple Reviews
 
 ---
 
-## 🛠 Amenity Entity
+### Review
 
-### Attributes
+Attributes:
 
-- id
-- name
-- description
-- created_at
-- updated_at
+- `id: UUID4`
+- `rating: int`
+- `comment: str`
+- `user_id: UUID4`
+- `place_id: UUID4`
+- `created_at: datetime`
+- `updated_at: datetime`
 
-### Responsibilities
+Responsibilities:
 
-- Create amenity
-- Update amenity
-- Delete amenity
-- List amenities
-
-### Relationships
-
-- Many-to-Many with Place
+- Linked to a specific User
+- Linked to a specific Place
+- Can be created, updated, deleted, and listed by place
 
 ---
 
-# 🔁 4. Sequence Diagrams – API Interaction Flows
+### Amenity
 
-The following interactions must be represented using UML sequence diagrams in the final documentation.
+Attributes:
 
-Each diagram must include:
+- `id: UUID4`
+- `name: str`
+- `description: str`
+- `created_at: datetime`
+- `updated_at: datetime`
 
-- Client
-- Presentation Layer
-- Facade
-- Business Model
-- Persistence Layer
-- Database
+Responsibilities:
 
----
-
-## 1️⃣ User Registration – POST /users
-
-Flow:
-
-1. Client sends registration request.
-2. Presentation layer validates request format.
-3. Presentation calls `Facade.register_user()`.
-4. Business layer validates domain rules.
-5. Persistence layer stores the user.
-6. Response returned to client.
+- Can be created, updated, deleted, and listed
+- Associated with multiple Places
 
 ---
 
-## 2️⃣ Place Creation – POST /places
+## 🔗 Cardinalities
 
-Flow:
+- User (1) → (*) Place
+- User (1) → (*) Review
+- Place (1) → (*) Review
+- Place (*) ↔ (*) Amenity
 
-1. Client sends place creation request.
-2. Presentation validates request structure.
-3. Facade verifies owner existence.
-4. Business logic validates constraints.
-5. Persistence saves place.
-6. Response returned.
+All multiplicities are enforced at the Business Logic Layer.
 
 ---
 
-## 3️⃣ Review Submission – POST /reviews
+## ⚙ Business Rules
 
-Flow:
-
-1. Client sends review data.
-2. Presentation validates format.
-3. Business layer checks:
-   - User exists
-   - Place exists
-4. Review is persisted.
-5. Confirmation returned.
+- Each entity must have a unique UUID4 identifier
+- All entities track creation and update timestamps
+- Rating must be between 1 and 5
+- Only registered users can create places
+- Only registered users can write reviews
+- Each review must reference an existing place
+- Each place must reference a valid owner (User)
 
 ---
 
-## 4️⃣ Fetch Places – GET /places
-
-Flow:
-
-1. Client sends fetch request.
-2. Presentation forwards to Facade.
-3. Business layer retrieves places.
-4. Persistence queries database.
-5. Serialized response returned.
+## 4️⃣ API Interaction Sequence Diagrams
 
 ---
 
-# 🗄 5. Persistence Requirements
+# SD-01 — User Registration (POST `/users`)
 
-- All entities must be persisted in a database.
-- Each entity must have a unique identifier.
-- Creation and update timestamps are mandatory.
-- Database implementation will be defined in Part 3.
+<p align="center">
+  <img src="./docs/sequence_diagram/Sequence_SD01_User_Registration.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/sequence_diagram/Sequence_SD01_User_Registration.pdf">📄 View Full PDF Version</a>
+</p>
+
+### Flow Summary
+
+1. POST request received
+2. Email uniqueness verified
+3. User entity created
+4. Persisted in database
+5. 201 Created returned
 
 ---
 
-# 📐 6. Design Principles Applied
+# SD-02 — Place Creation (POST `/places`)
+
+<p align="center">
+  <img src="./docs/sequence_diagram/Sequence_SD02_Place_Creation.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/sequence_diagram/Sequence_SD02_Place_Creation.pdf">📄 View Full PDF Version</a>
+</p>
+
+### Flow Summary
+
+1. Authenticated request received
+2. Owner existence verified
+3. Place entity created
+4. Persisted
+5. 201 Created returned
+
+---
+
+# SD-03 — Review Submission (POST `/places/{id}/reviews`)
+
+<p align="center">
+  <img src="./docs/sequence_diagram/Sequence_SD03_Review_Submission.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/sequence_diagram/Sequence_SD03_Review_Submission.pdf">📄 View Full PDF Version</a>
+</p>
+
+### Flow Summary
+
+1. Place existence verified
+2. User existence verified
+3. Rating validated (1–5)
+4. Review persisted
+5. 201 Created returned
+
+---
+
+# SD-04 — Fetching Places (GET `/places`)
+
+<p align="center">
+  <img src="./docs/sequence_diagram/Sequence_SD04_Fetching_Places.png" width="900"/>
+</p>
+
+<p align="center">
+  <a href="./docs/sequence_diagram/Sequence_SD04_Fetching_Places.pdf">📄 View Full PDF Version</a>
+</p>
+
+### Flow Summary
+
+1. GET request received
+2. Filters applied
+3. Data retrieved from persistence layer
+4. 200 OK returned
+
+---
+
+## 5️⃣ Architectural Principles Applied
 
 - Layered Architecture
-- Facade Pattern
 - Separation of Concerns
-- Single Responsibility Principle
-- Controlled dependency direction
-- UML standard notation compliance
+- Facade Pattern
+- Dependency Direction Control
+- Database Isolation
+- BaseModel abstraction
+- UUID-based identification
 
 ---
 
-# ✅ 7. Requirement Coverage
+## 6️⃣ Assumptions & Design Decisions
 
-✔ User Management implemented  
-✔ Place Management implemented  
-✔ Review Management implemented  
-✔ Amenity Management implemented  
-✔ Unique IDs included  
-✔ Audit fields included  
-✔ CRUD operations covered  
-✔ Relationships accurately modeled  
-✔ Layer communication clearly defined  
+## Assumptions
+
+- Passwords are assumed to be securely hashed before persistence.
+- Authentication mechanism is not detailed in this phase.
+- Database implementation will be completed in Part 3.
+- Repository layer abstracts storage implementation.
+
+## Design Decisions
+
+- UUID4 ensures global uniqueness.
+- Audit fields are centralized in BaseModel.
+- Facade centralizes orchestration.
+- Entities encapsulate validation logic.
 
 ---
 
-# 📎 Conclusion
+## 7️⃣ Conclusion
 
-This document provides a complete technical blueprint for HBnB Evolution.
+This document defines the structural and architectural foundation of HBnB Evolution.
 
-It defines:
+It ensures:
 
-- System structure
-- Business entities
-- Relationships
-- API interaction flows
-- Architectural constraints
+- Maintainability
+- Scalability
+- Business rule traceability
+- Strict alignment with project requirements
 
-It will serve as the foundation for the implementation phases of the project.
+This documentation will guide implementation in the next phases.
+
+---
+
+## 🔄 Part 2 — Implementation of Business Logic & REST API
+
+## 📌 Overview
+
+After completing the architectural design in **Part 1**, this phase focuses on transforming the documented architecture into a fully functional application.
+
+The objective of Part 2 is to implement:
+
+- The **Business Logic layer**
+- The **Presentation layer (REST API with Flask + flask-restx)**
+- An **in-memory persistence system**
+- The **Facade pattern** for clean layer communication
+
+Authentication (JWT) and database persistence (SQLAlchemy) will be implemented in **Part 3**.
+
+---
+
+### 🏗 Global Architecture (Part 2)
+
+The application now follows a strict modular architecture:
+
+```
+Presentation Layer (API - Flask / flask-restx)
+        ↓
+Facade
+        ↓
+Business Logic Layer (Models & Relationships)
+        ↓
+Persistence Layer (In-Memory Repository)
+```
+
+### Layer Responsibilities
+
+| Layer | Responsibility |
+|--------|---------------|
+| Presentation | Define REST endpoints & API documentation |
+| Facade | Simplify communication between API and Business Logic |
+| Business Logic | Define entities, relationships, validation rules |
+| Persistence | Store objects in memory (temporary storage) |
+
+---
+
+### 🧠 Key Concepts Implemented
+
+## 1️⃣ In-Memory Persistence
+
+Instead of using a database at this stage:
+
+- All entities are stored in memory
+- Repository handles:
+  - Object storage
+  - Retrieval
+  - Validation
+  - Updates
+
+This repository is designed to be **replaced later by SQLAlchemy in Part 3** without modifying the API layer.
+
+---
+
+## 2️⃣ Facade Pattern
+
+The Facade acts as a simplified interface between:
+
+- API endpoints
+- Business Logic layer
+
+Instead of letting the API manipulate models directly, the API communicates through:
+
+```
+facade.create_user()
+facade.get_user()
+facade.update_user()
+...
+```
+
+This ensures:
+
+- Separation of concerns
+- Maintainability
+- Easier future extension (JWT, DB, RBAC)
+
+---
+
+### 🧱 Business Logic Implementation (T1)
+
+## Core Entities Implemented
+
+- `User`
+- `Place`
+- `Review`
+- `Amenity`
+
+Each entity:
+
+- Inherits common attributes from a base model:
+  - `id (UUID)`
+  - `created_at`
+  - `updated_at`
+- Implements validation logic
+- Defines relationships with other entities
+
+### Relationships
+
+- A `User` can own multiple `Places`
+- A `Place` belongs to one `User`
+- A `Place` can have multiple `Amenities`
+- A `Place` can have multiple `Reviews`
+- A `Review` is linked to:
+  - one `User`
+  - one `Place`
+
+Validation includes:
+
+- Price validation
+- Latitude / Longitude validation
+- Required attributes
+- Review text validation
+- Association integrity
+
+---
+
+### 🌐 API Endpoints Implementation
+
+Base prefix:
+
+```
+/api/v1/
+```
+
+---
+
+## 👤 Users (T2)
+
+Implemented:
+
+- `POST /users`
+- `GET /users`
+- `GET /users/<id>`
+- `PUT /users/<id>`
+
+Not implemented:
+
+- ❌ DELETE
+
+Password is never returned in API responses.
+
+---
+
+## 🏷 Amenities (T3)
+
+Implemented:
+
+- `POST /amenities`
+- `GET /amenities`
+- `GET /amenities/<id>`
+- `PUT /amenities/<id>`
+
+---
+
+## 🏠 Places (T4)
+
+Implemented:
+
+- `POST /places`
+- `GET /places`
+- `GET /places/<id>`
+- `PUT /places/<id>`
+
+Validation includes:
+
+- `price`
+- `latitude`
+- `longitude`
+
+Owner and amenities are included when retrieving a place.
+
+---
+
+## ⭐ Reviews (T5)
+
+Implemented:
+
+- `POST /reviews`
+- `GET /reviews`
+- `GET /reviews/<id>`
+- `PUT /reviews/<id>`
+- `DELETE /reviews/<id>`
+
+Retrieve all reviews for a specific place supported.
+
+---
+
+### 🧪 Testing & Validation (T6)
+
+Includes:
+
+- cURL testing
+- Swagger documentation (flask-restx)
+- Attribute validation
+- Edge case handling
+- Automated tests (unittest / pytest)
+
+---
+
+### 🚀 Project Scope Status
+
+| Part | Status |
+|------|--------|
+| Part 1 | Architecture & UML Design |
+| Part 2 | Business Logic + REST API (In-Memory) |
+| Part 3 | SQLAlchemy + JWT + RBAC (Next) |
+
+---
+
+### 📂 Repository Structure (Part 2)
+
+```
+part2/
+│
+├── api/
+│   └── v1/
+│       ├── users.py
+│       ├── places.py
+│       ├── reviews.py
+│       └── amenities.py
+│
+├── models/
+│   ├── base_model.py
+│   ├── user.py
+│   ├── place.py
+│   ├── review.py
+│   └── amenity.py
+│
+├── persistence/
+│   └── repository.py
+│
+├── services/
+│   └── facade.py
+│
+└── run.py
+```
+
+---
+
+## 👥 Authors
+
+- Antoine Gousset – GitHub: [Antgst](https://github.com/Antgst)
+- Gwendal Boisard – GitHub: [Gwendal-B](https://github.com/Gwendal-B)
+- Yonas Houriez – GitHub: [Ausaryu](https://github.com/Ausaryu)
+
+See `AUTHORS`.
+
+---
