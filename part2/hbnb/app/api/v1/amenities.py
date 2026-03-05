@@ -18,7 +18,7 @@ class AmenityList(Resource):
         """Register a new amenity"""
         amenity_data = api.payload
 
-        existing_amenity = facade.get_amenity(amenity_data['name'])
+        existing_amenity = facade.get_amenity_by_name(amenity_data['name'])
         if existing_amenity:
             return {'error': 'Amenity already registered'}, 400
 
