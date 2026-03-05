@@ -53,7 +53,11 @@ class HBnBFacade:
         return self.amenity_repo.get_all()
 
     def update_amenity(self, amenity_id, amenity_data):
-        return self.amenity_repo.update(amenity_id, amenity_data)
+        amenity = self.amenity_repo.get(amenity_id)
+        if not amenity:
+            return None
+        self.amenity_repo.udpate(amenity_id, amenity_data)
+        return self.amenity_repo.get(amenity_id)
 
     def create_place(self, place_data):
         owner = self.user_repo.get(place_data['owner_id'])
