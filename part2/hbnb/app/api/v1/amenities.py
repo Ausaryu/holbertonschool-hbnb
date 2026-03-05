@@ -3,7 +3,6 @@ from app.services import facade
 
 api = Namespace('amenities', description='Amenity operations')
 
-# Define the amenity model for input validation and documentation
 amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='Name of the amenity')
 })
@@ -18,8 +17,10 @@ class AmenityList(Resource):
         """Register a new amenity"""
         amenity_data = api.payload
 
-        existing_amenity = facade.get_amenity_by_name(amenity_data['name'])
-        if existing_amenity:
+        if not amenity_data or not amenity_data.get('name') or not str(amenity_data['name']).strip():
+            return {'error': "'name' is required and cannot be empty"}, 400
+
+        if facade.get_amenity_by_name(amenity_data['name']):
             return {'error': 'Amenity already registered'}, 400
 
         new_amenity = facade.create_amenity(amenity_data)
@@ -29,7 +30,7 @@ class AmenityList(Resource):
     def get(self):
         """Retrieve a list of all amenities"""
         amenities = facade.get_all_amenities()
-        return [{'id': u.id, 'name': u.name} for u in amenities], 200
+        return [{'id': a.id, 'name': a.name} for a in amenities], 200
 
 
 @api.route('/<amenity_id>')
@@ -41,11 +42,7 @@ class AmenityResource(Resource):
         amenity = facade.get_amenity(amenity_id)
         if not amenity:
             api.abort(404, f"Amenity {amenity_id} not found")
-
-        return {
-            "id": amenity.id,
-            "name": amenity.name
-        }, 200
+        return {"id": amenity.id, "name": amenity.name}, 200
 
     @api.expect(amenity_model)
     @api.response(200, 'Amenity updated successfully')
@@ -53,13 +50,7 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
         """Update an amenity's information"""
-        amenity_data = api.payload
-
-        updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        updated_amenity = facade.update_amenity(amenity_id, api.payload)
         if not updated_amenity:
             api.abort(404, f"Amenity {amenity_id} not found")
-
-        return {
-            "id": updated_amenity.id,
-            "name": updated_amenity.name
-        }, 200
+        return {"id": updated_amenity.id, "name": updated_amenity.name}, 200
