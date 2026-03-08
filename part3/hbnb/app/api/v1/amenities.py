@@ -17,13 +17,18 @@ class AmenityList(Resource):
         """Register a new amenity"""
         amenity_data = api.payload
 
-        if not amenity_data or not amenity_data.get('name') or not str(amenity_data['name']).strip():
+        if (not amenity_data or not amenity_data.get('name') or
+                not str(amenity_data['name']).strip()):
             return {'error': "'name' is required and cannot be empty"}, 400
 
         if facade.get_amenity_by_name(amenity_data['name']):
             return {'error': 'Amenity already registered'}, 400
 
-        new_amenity = facade.create_amenity(amenity_data)
+        try:
+            new_amenity = facade.create_amenity(amenity_data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
+
         return {'id': new_amenity.id, 'name': new_amenity.name}, 201
 
     @api.response(200, 'List of amenities retrieved successfully')
@@ -50,7 +55,17 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
         """Update an amenity's information"""
-        updated_amenity = facade.update_amenity(amenity_id, api.payload)
+        amenity_data = api.payload
+
+        if (not amenity_data or not amenity_data.get('name') or
+                not str(amenity_data['name']).strip()):
+            return {'error': "'name' is required and cannot be empty"}, 400
+
+        try:
+            updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        except ValueError as e:
+            return {'error': str(e)}, 400
+
         if not updated_amenity:
             api.abort(404, f"Amenity {amenity_id} not found")
         return {"id": updated_amenity.id, "name": updated_amenity.name}, 200
