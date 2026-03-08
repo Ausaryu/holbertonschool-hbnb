@@ -12,7 +12,12 @@ class HBnBFacade:
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
+    # ------------------------------------------------------------------ #
+    #  Users
+    # ------------------------------------------------------------------ #
+
     def create_user(self, user_data):
+        """Crée un utilisateur — le password est hashé dans le modèle User."""
         user = User(**user_data)
         self.user_repo.add(user)
         return user
@@ -35,8 +40,16 @@ class HBnBFacade:
             if self.get_user_by_email(user_data["email"]):
                 raise ValueError("Email already registered")
 
+        # Si un nouveau password est fourni, le hacher via la méthode du modèle
+        if "password" in user_data:
+            user.hash_password(user_data.pop("password"))
+
         self.user_repo.update(user_id, user_data)
         return self.user_repo.get(user_id)
+
+    # ------------------------------------------------------------------ #
+    #  Amenities
+    # ------------------------------------------------------------------ #
 
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
@@ -58,6 +71,10 @@ class HBnBFacade:
             return None
         self.amenity_repo.update(amenity_id, amenity_data)
         return self.amenity_repo.get(amenity_id)
+
+    # ------------------------------------------------------------------ #
+    #  Places
+    # ------------------------------------------------------------------ #
 
     def create_place(self, place_data):
         owner = self.user_repo.get(place_data['owner_id'])
@@ -99,6 +116,10 @@ class HBnBFacade:
         place.update(place_data)
         return self.place_repo.get(place_id)
 
+    # ------------------------------------------------------------------ #
+    #  Reviews
+    # ------------------------------------------------------------------ #
+
     def create_review(self, review_data):
         user = self.get_user(review_data['user_id'])
         place = self.get_place(review_data['place_id'])
@@ -108,12 +129,13 @@ class HBnBFacade:
         if not place:
             raise ValueError("Place not found")
 
-        new_review = Review(text=review_data['text'],
-                            rating=review_data['rating'],
-                            place=place, user=user)
-
+        new_review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            place=place,
+            user=user
+        )
         place.reviews.append(new_review)
-
         self.review_repo.add(new_review)
         return new_review
 
@@ -124,8 +146,7 @@ class HBnBFacade:
         return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        all_reviews = self.get_all_reviews()
-        return [r for r in all_reviews if r.place.id == place_id]
+        return [r for r in self.get_all_reviews() if r.place.id == place_id]
 
     def update_review(self, review_id, review_data):
         review = self.review_repo.get(review_id)
