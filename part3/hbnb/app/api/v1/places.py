@@ -115,7 +115,6 @@ class PlaceResource(Resource):
             api.abort(404, "Place not found")
         return marshal_place(updated_place), 200
 
-
 @api.route('/<place_id>/reviews')
 class PlaceReviewList(Resource):
     @api.response(200, 'List of reviews for the place retrieved successfully')
