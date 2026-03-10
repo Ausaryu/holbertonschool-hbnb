@@ -12,7 +12,7 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner  # Instance de User
-        self.amenities = [] # Liste d'instances d'Amenity
+        self.amenities = []  # Liste d'instances d'Amenity
         self.reviews = []   # Liste d'instances de Review
 
     @staticmethod

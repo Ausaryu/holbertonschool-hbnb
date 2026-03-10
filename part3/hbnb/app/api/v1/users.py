@@ -7,6 +7,7 @@ api = Namespace('users', description='User operations')
 
 email_validation = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
+
 def validate_user_payload(data, require_password=True):
     """Valide les champs obligatoires pour la création. Retourne un message d'erreur ou None."""
     if not data:
