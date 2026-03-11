@@ -116,7 +116,6 @@ class PlaceResource(Resource):
             api.abort(404, "Place not found")
         return marshal_place(updated_place), 200
 
-    
     @jwt_required()
     @api.doc(security='BearerAuth')
     @api.response(200, 'Place deleted successfully')
