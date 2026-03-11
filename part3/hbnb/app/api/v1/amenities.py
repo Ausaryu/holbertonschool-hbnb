@@ -29,7 +29,8 @@ class AmenityList(Resource):
             return {'error': 'Admin privileges required'}, 403
 
         amenity_data = api.payload
-        if not amenity_data or not amenity_data.get('name') or not str(amenity_data['name']).strip():
+        if (not amenity_data or not amenity_data.get('name') or
+                not str(amenity_data['name']).strip()):
             return {'error': "'name' is required and cannot be empty"}, 400
 
         if facade.get_amenity_by_name(amenity_data['name']):
@@ -69,7 +70,8 @@ class AmenityResource(Resource):
             return {'error': 'Admin privileges required'}, 403
 
         amenity_data = api.payload
-        if not amenity_data or not amenity_data.get('name') or not str(amenity_data['name']).strip():
+        if (not amenity_data or not amenity_data.get('name') or
+                not str(amenity_data['name']).strip()):
             return {'error': "'name' is required and cannot be empty"}, 400
 
         try:

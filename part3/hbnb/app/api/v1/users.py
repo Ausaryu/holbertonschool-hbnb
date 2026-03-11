@@ -9,7 +9,10 @@ email_validation = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
 
 def validate_user_payload(data, require_password=True):
-    """Valide les champs obligatoires pour la création. Retourne un message d'erreur ou None."""
+    """
+    Valide les champs obligatoires pour la création.
+    Retourne un message d'erreur ou None.
+    """
     if not data:
         return "Payload is empty"
     for field in ('first_name', 'last_name', 'email'):
@@ -64,11 +67,16 @@ def validate_admin_update_payload(data):
 
 # Modèle d'entrée pour la création (inclut email + password)
 user_model = api.model('User', {
-    'first_name': fields.String(required=True, description='First name of the user'),
-    'last_name':  fields.String(required=True, description='Last name of the user'),
-    'email':      fields.String(required=True, description='Email of the user'),
-    'password':   fields.String(required=True, description='Password of the user'),
-    'is_admin':   fields.Boolean(required=True, description='Status admin of the user'),
+    'first_name': fields.String(
+        required=True, description='First name of the user'),
+    'last_name': fields.String(
+        required=True, description='Last name of the user'),
+    'email': fields.String(
+        required=True, description='Email of the user'),
+    'password': fields.String(
+        required=True, description='Password of the user'),
+    'is_admin': fields.Boolean(
+        required=True, description='Status admin of the user'),
 })
 
 # Modèle d'entrée pour la mise à jour (first_name et last_name seulement)
@@ -140,7 +148,9 @@ class UserList(Resource):
 
 @api.route('/<user_id>')
 class UserResource(Resource):
-    @api.response(200, 'User details retrieved successfully', user_response_model)
+    @api.response(
+        200, 'User details retrieved successfully', user_response_model
+    )
     @api.response(404, 'User not found')
     def get(self, user_id):
         """Get user details by ID (public endpoint)"""
@@ -153,15 +163,17 @@ class UserResource(Resource):
     @api.doc(security='BearerAuth')
     @api.expect(user_update_model, validate=True)
     @api.response(200, 'User successfully updated', user_response_model)
-    @api.response(400, 'Invalid input data — email and password cannot be modified')
+    @api.response(400, 'Invalid input data - email and password '
+                       'cannot be modified')
     @api.response(401, 'Authentication required')
     @api.response(403, 'Unauthorized action')
     @api.response(404, 'User not found')
     def put(self, user_id):
-        """Update user first/last name — email and password cannot be changed here"""
+        """Update user first/last name — email and password cannot be
+        changed here"""
         current_user_id = get_jwt_identity()
         claims = get_jwt()
-        
+
         is_admin = claims.get('is_admin', False)
         # Seul l'utilisateur lui-même ou un admin peut modifier
         if current_user_id != user_id and not is_admin:

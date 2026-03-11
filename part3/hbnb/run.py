@@ -1,6 +1,7 @@
 from app import create_app
 from app.services import facade
 
+
 def seed_admin():
     admin_email = "admin@hbnb.io"
 
@@ -15,6 +16,7 @@ def seed_admin():
         "password": "admin123",
         "is_admin": True
     })
+
 
 app = create_app()
 

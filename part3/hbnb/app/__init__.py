@@ -28,21 +28,35 @@ def create_app(config_class="config.DevelopmentConfig"):
     jwt.init_app(app)
     db.init_app(app)
 
-    api = Api(
-        app, version='1.0',
-        title='HBnB API',
-        description='HBnB Application API',
-        doc='/api/v1/'
-    )
 
     # On réinitialise seulement les repos encore en mémoire
     facade.amenity_repo = InMemoryRepository()
     facade.place_repo = InMemoryRepository()
     facade.review_repo = InMemoryRepository()
 
+    api = Api(
+        app, version='1.0',
+        title='HBnB API',
+        description='HBnB Application API',
+        doc='/api/v1/',
+        authorizations={
+            'BearerAuth': {
+                'type': 'apiKey',
+                'in': 'header',
+                'name': 'Authorization',
+                'description': 'JWT — format: Bearer <token>'
+            }
+        }
+    )
+
     api.add_namespace(users_ns, path='/api/v1/users')
     api.add_namespace(amenities_ns, path='/api/v1/amenities')
     api.add_namespace(places_ns, path='/api/v1/places')
     api.add_namespace(reviews_ns, path='/api/v1/reviews')
     api.add_namespace(auth_ns, path='/api/v1/auth')
+
+    # Crée les tables SQLAlchemy si elles n'existent pas encore
+    with app.app_context():
+        db.create_all()
+
     return app
