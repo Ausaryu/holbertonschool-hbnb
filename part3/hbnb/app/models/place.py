@@ -4,12 +4,17 @@ from app import db
 class Place(BaseModel):
     __tablename__ = 'places'
 
-    title = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(50), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(1024), nullable=False, default='')
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    owner = db.Column(db.String(36), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+    # Relations
+    owner = db.Relationship(db.String(50), db.ForeignKey('owner.name'), nullable=False)
+    reviews = db.Relationship(db.String(50), db.ForeignKey('review.name'), nullable=False)
+    amenities = db.Relationship(db.String(50), db.ForeignKey('amenity.name'), nullable=False)
 
     def __init__(self, title, description, price, latitude, longitude, owner):
         self._validate_title(title)
