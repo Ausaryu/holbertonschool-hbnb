@@ -1,7 +1,16 @@
 from app.models.base_model import BaseModel
-
+from app import db
 
 class Place(BaseModel):
+    __tablename__ = 'places'
+
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(50), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    owner = db.Column(db.String(36), nullable=False)
+
     def __init__(self, title, description, price, latitude, longitude, owner):
         self._validate_title(title)
         self.validate_place_data(price, latitude, longitude)
@@ -11,9 +20,7 @@ class Place(BaseModel):
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-        self.owner = owner  # Instance de User
-        self.amenities = []  # Liste d'instances d'Amenity
-        self.reviews = []   # Liste d'instances de Review
+        self.owner = owner
 
     @staticmethod
     def _validate_title(title):
