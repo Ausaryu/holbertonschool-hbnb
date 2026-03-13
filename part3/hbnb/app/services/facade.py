@@ -8,10 +8,10 @@ from app.persistence.repository import UserRepository
 
 class HBnBFacade:
     def __init__(self):
-        self._user_repo_instance    = None
+        self._user_repo_instance = None
         self._amenity_repo_instance = None
-        self._place_repo_instance   = None
-        self._review_repo_instance  = None
+        self._place_repo_instance = None
+        self._review_repo_instance = None
 
     # ------------------------------------------------------------------ #
     #  Lazy repo properties
