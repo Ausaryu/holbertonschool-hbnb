@@ -209,8 +209,6 @@ The relational schema is also documented in [ER_diagram.pdf](./docs/ER_diagram.p
 
 ### Also ER Diagram mermaid version
 
-![ER Diagram](./ER_diagram.png)
-
 <details>
 <summary>Alternative ER diagram</summary>
 
