@@ -236,3 +236,10 @@ JWT auth, duplicate detection, and access control (403/401 cases).
 | `TestingConfig`     | `sqlite:///:memory:`        | Test suite          |
 
 Set via `create_app("config.DevelopmentConfig")` or `create_app("config.TestingConfig")`.
+
+## Authors
+- **Antoine Gousset** — [GitHub](https://github.com/Antgst)
+- **Gwendal Boisard** — [GitHub](https://github.com/Gwendal-B)
+- **Yonas Houriez** — [GitHub](https://github.com/Ausaryu)
+
+See `AUTHORS`.
