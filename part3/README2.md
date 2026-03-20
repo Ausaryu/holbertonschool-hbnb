@@ -207,6 +207,16 @@ The relational schema is also documented in [ER_diagram.pdf](./docs/ER_diagram.p
 
 ![ER Diagram](./docs/ER_diagram.png)
 
+### Also ER Diagram mermaid version
+
+![ER Diagram](./ER_diagram.png)
+
+<details>
+<summary>Alternative ER diagram</summary>
+
+![Alternative ER Diagram](./docs/mermaid-diagram.png)
+
+</details>
 
 ### SQL Scripts (independent of ORM)
 
