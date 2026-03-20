@@ -9,12 +9,13 @@ Part 3 extends the HBnB REST API with:
 - **Database persistence** via SQLAlchemy (SQLite in development)
 - **bcrypt password hashing**
 - **SQL schema scripts** for independent database provisioning
+- **ER diagram documentation** for the relational schema
 
 ---
 
 ## Project Structure
 
-```
+```bash
 part3/hbnb/
 ├── app/
 │   ├── __init__.py               # App factory — bcrypt, JWT, SQLAlchemy init
@@ -42,6 +43,8 @@ part3/hbnb/
 │   └── test_crud.sql             # CRUD test queries
 ├── Test/
 │   └── test_hbnb_api.py          # Unittest suite (in-memory SQLite)
+├── ER_diagram.pdf.pdf            # Entity-Relationship diagram of the database schema
+├── ER_diagram.png                # Preview image displayed directly in the README
 ├── config.py                     # DevelopmentConfig, TestingConfig
 ├── run.py                        # App entrypoint + admin seed
 └── requirements.txt
@@ -51,7 +54,7 @@ part3/hbnb/
 
 ## Requirements
 
-```
+```bash
 flask
 flask-restx
 flask-bcrypt
@@ -75,7 +78,8 @@ cd part3/hbnb
 python3 run.py
 ```
 
-The app starts on `http://127.0.0.1:5000`.  
+The app starts on `http://127.0.0.1:5000`.
+
 Swagger UI: `http://127.0.0.1:5000/api/v1/`
 
 On first run, `run.py` seeds a default admin account:
@@ -114,7 +118,7 @@ Response:
 
 Use the token on protected endpoints:
 
-```
+```http
 Authorization: Bearer <JWT>
 ```
 
@@ -137,7 +141,8 @@ Authorization: Bearer <JWT>
 | GET    | `/api/v1/users/<id>`    | Public        | Get user by ID                     |
 | PUT    | `/api/v1/users/<id>`    | JWT required  | Update user (self or admin)        |
 
-POST requires a valid admin JWT. Regular users can only update `first_name` and `last_name`.  
+POST requires a valid admin JWT. Regular users can only update `first_name` and `last_name`.
+
 Admins can also update `email` and `password`.
 
 ### Amenities
@@ -160,7 +165,8 @@ Admins can also update `email` and `password`.
 | DELETE | `/api/v1/places/<id>`           | Owner or admin    | Delete a place                    |
 | GET    | `/api/v1/places/<id>/reviews`   | Public            | List reviews for a place          |
 
-PUT only allows: `title`, `description`, `price`, `latitude`, `longitude`.  
+PUT only allows: `title`, `description`, `price`, `latitude`, `longitude`.
+
 `owner_id` and `amenities` cannot be changed via PUT.
 
 ### Reviews
@@ -187,13 +193,28 @@ PUT only allows: `text`, `rating`. `user_id` and `place_id` are immutable.
 
 Tables created automatically on startup via `db.create_all()`:
 
-| Table          | Description                        |
-|----------------|------------------------------------|
-| `users`        | User accounts                      |
-| `places`       | Listings                           |
-| `reviews`      | Reviews with CHECK + UNIQUE        |
-| `amenities`    | Amenity catalogue                  |
-| `place_amenity`| Many-to-many Place ↔ Amenity       |
+| Table           | Description                        |
+|-----------------|------------------------------------|
+| `users`         | User accounts                      |
+| `places`        | Listings                           |
+| `reviews`       | Reviews with CHECK + UNIQUE        |
+| `amenities`     | Amenity catalogue                  |
+| `place_amenity` | Many-to-many Place ↔ Amenity       |
+
+### ER Diagram
+
+The relational schema is also documented in [ER_diagram.pdf](./docs/ER_diagram.pdf), which provides a visual overview of the database entities and their relationships.
+
+![ER Diagram](./docs/ER_diagram.png)
+
+### Also ER Diagram mermaid version
+
+<details>
+<summary>Alternative ER diagram</summary>
+
+![Alternative ER Diagram](./docs/mermaid-diagram.png)
+
+</details>
 
 ### SQL Scripts (independent of ORM)
 
@@ -223,21 +244,22 @@ python3 -m pytest Test/test_hbnb_api.py -v
 python3 -m unittest Test/test_hbnb_api -v
 ```
 
-The test suite covers: user CRUD, amenity CRUD, place CRUD, review CRUD,  
+The test suite covers: user CRUD, amenity CRUD, place CRUD, review CRUD,
 JWT auth, duplicate detection, and access control (403/401 cases).
 
 ---
 
 ## Configuration
 
-| Config class      | DB URI                        | Used for            |
-|-------------------|-------------------------------|---------------------|
+| Config class        | DB URI                      | Used for            |
+|---------------------|-----------------------------|---------------------|
 | `DevelopmentConfig` | `sqlite:///development.db`  | `python3 run.py`    |
 | `TestingConfig`     | `sqlite:///:memory:`        | Test suite          |
 
 Set via `create_app("config.DevelopmentConfig")` or `create_app("config.TestingConfig")`.
 
 ## Authors
+
 - **Antoine Gousset** — [GitHub](https://github.com/Antgst)
 - **Gwendal Boisard** — [GitHub](https://github.com/Gwendal-B)
 - **Yonas Houriez** — [GitHub](https://github.com/Ausaryu)
