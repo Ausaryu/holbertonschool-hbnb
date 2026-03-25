@@ -1,45 +1,49 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List of Places</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <img src="images/logo.png" alt="Application logo" class="logo" />
-      <nav>
-        <a href="login.html" class="login-button">Login</a>
-        <a href="index.html">Home</a>
-      </nav>
-    </header>
-    <main>
-      <section id="filter">
-        <label for="price-filter">Max Price:</label>
-        <select id="price-filter">
-          <!-- Options will be populated dynamically -->
-        </select>
-      </section>
-      <section id="places-list">
-        <article class="place-card">
-          <h2>Cozy Apartment</h2>
-          <p>Price per night: $120</p>
-          <a href="place.html" class="details-button">View Details</a>
-        </article>
-        <article class="place-card">
-          <h2>Wonderful Villa</h2>
-          <p>Price per night: $450</p>
-          <a href="place.html" class="details-button">View Details</a>
-        </article>
-        <article class="place-card">
-          <h2>Tiny House</h2>
-          <p>Price per night: $49</p>
-          <a href="place.html" class="details-button">View Details</a>
-        </article>
-      </section>
-    </main>
-    <script src="scripts.js"></script>
-    <footer>All rights reserved.</footer>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List of Places</title>
+  <link rel="icon" type="image/png" href="hbnb/images/icon.png">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header>
+    <img src="hbnb/images/logo.png" alt="Application logo" class="logo" />
+    <nav>
+      <a href="login.html" class="login-button">Login</a>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+  <main>
+    <section id="filter">
+      <label for="price-filter">Max Price:</label>
+      <select id="price-filter">
+        <!-- Options will be populated dynamically -->
+      </select>
+    </section>
+    <section id="places-list">
+      <article class="place-card">
+        <h2>Cozy Apartment</h2>
+        <p>Price per night: $120</p>
+        <a href="place.html" class="details-button">View Details</a>
+      </article>
+      <article class="place-card">
+        <h2>Wonderful Villa</h2>
+        <p>Price per night: $450</p>
+        <a href="place.html" class="details-button">View Details</a>
+      </article>
+      <article class="place-card">
+        <h2>Tiny House</h2>
+        <p>Price per night: $49</p>
+        <a href="place.html" class="details-button">View Details</a>
+      </article>
+    </section>
+  </main>
+  <script src="scripts.js"></script>
+  <footer>All rights reserved.</footer>
+</body>
+
 </html>
