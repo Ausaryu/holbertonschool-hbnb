@@ -1,0 +1,44 @@
+:root {
+    --primary-color: #ffad3b;
+    --secondary-color: #2a6f97;
+    --third-color: #f5f5f5;
+
+    --text-color: #333333;
+    --text-light: #777777;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--third-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 1rem;
+}
+
+nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+main {
+    padding: 2rem;
+}
+
+.review-card,
+.place-card {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}

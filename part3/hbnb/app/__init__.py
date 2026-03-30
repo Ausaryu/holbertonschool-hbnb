@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config_class)
 
     # Initialise Flask-Bcrypt avec l'app et initialise JWT manager mais aussi la database
