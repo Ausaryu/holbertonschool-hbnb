@@ -42,3 +42,12 @@ main {
   border: 1px solid #ddd;
   border-radius: 10px;
 }
+
+#error-login {
+  color: red;
+}
+
+.details-button a {
+  text-decoration: none;
+  color: var(--text-color);
+}
