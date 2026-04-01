@@ -2,12 +2,14 @@ function checkAuthentication() {
   const token = getCookie('token');
   const loginLink = document.getElementById('login-link');
 
-  if (!token) {
-    loginLink.style.display = 'block';
-    fetchPlaces();
-  } else {
-    loginLink.style.display = 'none';
-    fetchPlaces(token);
+  if (loginLink) {
+    if (!token) {
+      loginLink.style.display = 'block';
+      fetchPlaces();
+    } else {
+      loginLink.style.display = 'none';
+      fetchPlaces(token);
+    }
   }
 
 }
@@ -52,6 +54,87 @@ async function fetchPlaces(token) {
   }
 }
 
+async function fetchPlacesDetails(token, id) {
+  // Make a GET request to fetch places data
+  // Include the token in the Authorization header
+  // Handle the response and pass the data to displayPlaces function
+  try {
+    console.log("test")
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/places/${id}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      console.error("Erreur HTTP :", response.status);
+      return;
+    }
+
+    const data = await response.json();
+    console.log(data);
+    displayPlacesDetails(data)
+    return (data);
+
+  } catch (error) {
+    console.error("Erreur réseau :", error);
+  }
+}
+
+async function fetchPlacesReviews(token, id) {
+  // Make a GET request to fetch places data
+  // Include the token in the Authorization header
+  // Handle the response and pass the data to displayPlaces function
+  try {
+    console.log("test")
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/places/${id}/reviews`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    if (!response.ok) {
+      console.error("Erreur HTTP :", response.status);
+      return;
+    }
+
+    const data = await response.json();
+    console.log(data);
+    return (data);
+
+  } catch (error) {
+    console.error("Erreur réseau :", error);
+  }
+}
+
+function displayPlacesDetails(place) {
+  // Clear the current content of the places list
+  // Iterate over the places data
+  // For each place, create a div element and set its content
+  // Append the created element to the places list
+  const placesDetails = document.getElementById("place-details");
+  console.log(placesDetails)
+
+  if (placesDetails) {
+    placesDetails.innerHTML = "";
+
+    const details = document.createElement("section");
+    details.classList.add("place-details");
+
+    details.innerHTML = `
+            <h1>${place.title}</h1>
+            <div class="place-info">
+              <p><strong>Host:</strong> ${place.owner.first_name}</p>
+              <p><strong>Price per night:</strong> ${place.price}€</p>
+              <p><strong>Description:</strong> ${place.description}</p>
+              <p><strong>Amenities:</strong> Wi-Fi, Kitchen, Air conditioning</p>
+            </div>
+        `;
+
+    placesDetails.appendChild(details);
+  }
+}
+
 function displayPlaces(places) {
   // Clear the current content of the places list
   // Iterate over the places data
@@ -59,24 +142,26 @@ function displayPlaces(places) {
   // Append the created element to the places list
   const placesList = document.getElementById("places-list");
 
-  placesList.innerHTML = "";
+  if (placesList) {
+    placesList.innerHTML = "";
 
-  places.forEach(place => {
-    const card = document.createElement("article");
-    card.classList.add("place-card");
+    places.forEach(place => {
+      const card = document.createElement("article");
+      card.classList.add("place-card");
 
-    card.innerHTML = `
+      card.innerHTML = `
             <h3>${place.title}</h3>
             <p>Price: $${place.price}</p>
-            <button class="details-button"><a href="place.html?id=$${place.id}">View Details</a></button>
+            <button class="details-button"><a href="place.html?id=${place.id}">View Details</a></button>
         `;
-    card.dataset.price = place.price
+      card.dataset.price = place.price
 
-    placesList.appendChild(card);
-  });
+      placesList.appendChild(card);
+    });
+  }
 }
 
-function placefilter() {
+function placeFilter() {
   const priceFilter = document.getElementById('price-filter');
 
   if (priceFilter) {
@@ -117,8 +202,15 @@ function placefilter() {
   }
 }
 
+function getPlaceId() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  return id;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
+  const path = window.location.pathname;
 
   if (form) {
     form.addEventListener('submit', async function (event) {
@@ -169,6 +261,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   checkAuthentication();
 
-  placefilter();
+  placeFilter();
+
+  if (path.includes("place.html")) {
+    const id = getPlaceId();
+    const token = getCookie('token');
+    const place = fetchPlacesDetails(token, id);
+
+
+  }
 
 });
