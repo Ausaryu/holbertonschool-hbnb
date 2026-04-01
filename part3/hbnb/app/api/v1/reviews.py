@@ -7,7 +7,6 @@ api = Namespace('reviews', description='Review operations')
 review_model = api.model('Review', {
     'text':     fields.String(required=True,  description='Text of the review'),
     'rating':   fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'user_id':  fields.String(required=True,  description='ID of the user'),
     'place_id': fields.String(required=True,  description='ID of the place')
 })
 
@@ -74,14 +73,11 @@ class ReviewList(Resource):
         current_user_id = get_jwt_identity()
         claims = get_jwt()
         data = api.payload
+        data['user_id'] = current_user_id
 
         error = validate_review_payload(data)
         if error:
             return {"error": error}, 400
-
-        # user_id doit correspondre à l'utilisateur connecté (sauf admin)
-        if data.get('user_id') != current_user_id and not claims.get('is_admin', False):
-            return {'error': 'Unauthorized action — user_id must match your user ID'}, 403
 
         place_id = data.get('place_id')
 
