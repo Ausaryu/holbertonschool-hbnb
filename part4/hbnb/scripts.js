@@ -159,12 +159,16 @@ async function displayPlacesReviews(reviews) {
 
     reviewsWithUsers.forEach(review => {
       const card = document.createElement("article");
-      card.classList.add("review-card");
+      card.classList.add("review-card", "col-lg-6");
 
       card.innerHTML = `
-        <p><strong>User:</strong> ${review.userName}</p>
-        <p><strong>Rating:</strong> ${review.rating}/5</p>
-        <p>${review.text}</p>
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <p class="mb-2"><strong>User:</strong> ${review.userName}</p>
+            <p class="mb-2"><strong>Rating:</strong> ${review.rating}/5</p>
+            <p class="mb-0 text-secondary">${review.text}</p>
+          </div>
+        </div>
       `;
 
       reviewsList.appendChild(card);
@@ -191,12 +195,20 @@ function displayPlacesDetails(place) {
       .join(", ");
 
     details.innerHTML = `
-            <h1>${place.title}</h1>
-            <div class="place-info">
-              <p><strong>Host:</strong> ${place.owner.first_name}</p>
-              <p><strong>Price per night:</strong> ${place.price}€</p>
-              <p><strong>Description:</strong> ${place.description}</p>
-              <p><strong>Amenities:</strong> ${amenitiesList}</p>
+            <h1 class="display-6 fw-bold mb-4">${place.title}</h1>
+            <div class="place-info row g-3">
+              <div class="col-md-6">
+                <div class="info-chip"><strong>Host:</strong> ${place.owner.first_name}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-chip"><strong>Price per night:</strong> ${place.price}€</div>
+              </div>
+              <div class="col-12">
+                <div class="info-chip"><strong>Description:</strong> ${place.description}</div>
+              </div>
+              <div class="col-12">
+                <div class="info-chip"><strong>Amenities:</strong> ${amenitiesList}</div>
+              </div>
             </div>
         `;
 
@@ -216,12 +228,20 @@ function displayPlaces(places) {
 
     places.forEach(place => {
       const card = document.createElement("article");
-      card.classList.add("place-card");
+      card.classList.add("place-card", "col-md-6", "col-xl-4");
 
       card.innerHTML = `
-            <h3>${place.title}</h3>
-            <p>Price: $${place.price}</p>
-            <button class="details-button"><a href="place.html?id=${place.id}">View Details</a></button>
+            <div class="card h-100 border-0 shadow-sm">
+              <img src="${place.image || 'images/placeholder.jpg'}"
+                  class="card-img-top"
+                  alt="Place image">
+
+              <div class="card-body d-flex flex-column">
+                <h3 class="h5 card-title">${place.title}</h3>
+                <p class="card-text text-secondary mb-4">Price: $${place.price}</p>
+                <a class="btn btn-warning details-button mt-auto align-self-start" href="place.html?id=${place.id}">View Details</a>
+              </div>
+            </div>
         `;
       card.dataset.price = place.price
 
