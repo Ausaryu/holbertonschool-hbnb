@@ -5,76 +5,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>List of Places</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="icon" href="images/assets/favicon.ico" type="image/ico">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/pages/index.css">
   <script type="module" src="scripts/main.js"></script>
 </head>
 
 <body>
-  <header class="site-header shadow-sm">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container py-1">
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold text-white m-0" href="index.html">
+  <header class="site-header">
+    <div class="site-container">
+      <nav class="site-nav">
+        <a class="site-brand" href="index.html">
           <img src="images/assets/logo.png" alt="Hbnb logo" class="site-logo">
           <span>Hbnb</span>
         </a>
-        <div class="d-flex align-items-center gap-2 ms-auto">
-          <a href="index.html" class="btn btn-light btn-sm">Home</a>
-          <a href="login.html" id="login-link" class="btn btn-outline-light btn-sm">Login</a>
-          <button id="logout" class="btn btn-dark btn-sm" type="button">Logout</button>
+        <div class="site-actions">
+          <a href="index.html" class="button button--light">Home</a>
+          <a href="login.html" id="login-link" class="button button--ghost">Login</a>
+          <button id="logout" class="button button--ghost" type="button">Logout</button>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   </header>
 
-  <main class="py-5">
-    <section class="container">
-      <div class="hero-card p-4 p-lg-5 mb-4">
-        <div class="row g-4 align-items-center">
-          <div class="col-lg-8">
-            <h1 class="display-6 fw-bold mb-3">Find a place quickly</h1>
-            <p class="lead text-secondary mb-0">Parcourez des destinations hors du commun et trouvez votre havre, entre ciel et cosmos.</p>
-          </div>
-          <div class="col-lg-4">
-            <section id="filter" class="filter-panel">
-              <label for="price-filter" class="form-label fw-semibold">Max Price</label>
-              <select id="price-filter" class="form-select">
-                <!-- Options will be populated dynamically -->
-              </select>
-            </section>
-          </div>
-        </div>
+  <main class="page-stack">
+    <section class="panel home-hero">
+      <div>
+        <h1 class="home-hero-title">Find a place quickly</h1>
+        <p class="text-muted">Parcourez des destinations hors du commun et trouvez votre havre, entre ciel et cosmos.</p>
       </div>
+      <section id="filter" class="filter-panel">
+        <label for="price-filter" class="field-label">Max Price</label>
+        <select id="price-filter" class="select">
+          <!-- Options will be populated dynamically -->
+        </select>
+      </section>
+    </section>
 
-      <section class="d-flex justify-content-between align-items-center mb-4">
+    <section class="page-stack">
+      <section class="section-heading">
         <div>
-          <h2 class="h3 mb-1">Available Places</h2>
-          <p class="text-secondary mb-0">Explore the current list of places.</p>
+          <h2 class="section-title">Available Places</h2>
+          <p class="text-muted">Explore the current list of places.</p>
         </div>
       </section>
 
-      <section id="places-list" class="row g-4">
+      <section id="places-list" class="place-cards-grid">
         <!-- List of places will be populated dynamically -->
-        <article class="place-card col-md-6 col-xl-4">
-          <div class="card h-100 border-0 shadow-sm">
-            <img src="images/assets/placeholder.jpg" class="card-img-top" alt="Place image">
-            <div class="card-body">
-              <h3 class="h5 card-title">Cozy Apartment</h3>
-              <p class="card-text text-secondary">Price: 120€/night</p>
-              <a href="place.html" class="btn btn-warning details-button">View Details</a>
+        <article class="place-card">
+          <div class="card">
+            <img src="images/assets/placeholder.jpg" class="card-image" alt="Place image">
+            <div class="card-content">
+              <h3 class="card-title">Cozy Apartment</h3>
+              <p class="text-muted">Price: 120€/night</p>
+              <a href="place.html" class="button button--primary card-action">View Details</a>
             </div>
           </div>
         </article>
 
-        <article class="place-card col-md-6 col-xl-4">
-          <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body">
-              <h3 class="h5 card-title">Modern Studio</h3>
-              <p class="card-text text-secondary">Price: 90€/night</p>
-              <a href="place.html" class="btn btn-warning details-button">View Details</a>
+        <article class="place-card">
+          <div class="card">
+            <div class="card-content">
+              <h3 class="card-title">Modern Studio</h3>
+              <p class="text-muted">Price: 90€/night</p>
+              <a href="place.html" class="button button--primary card-action">View Details</a>
             </div>
           </div>
         </article>
@@ -82,9 +78,9 @@
     </section>
   </main>
 
-  <footer class="site-footer py-4 mt-auto">
-    <div class="container text-center text-secondary">
-      <p class="mb-0">© 2026 Cosmic Corp. All rights reserved. Exploring ideas beyond the stars.</p>
+  <footer class="site-footer">
+    <div class="site-container">
+      <p class="text-muted">© 2026 Cosmic Corp. All rights reserved. Exploring ideas beyond the stars.</p>
     </div>
   </footer>
 </body>

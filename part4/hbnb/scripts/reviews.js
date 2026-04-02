@@ -1,5 +1,9 @@
 import { getCookie, getPlaceIdFromURL } from './utils.js';
 
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             fetchPlacesReviews
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
 export async function fetchPlacesReviews() {
   const id = getPlaceIdFromURL();
   const token = getCookie('token');
@@ -23,6 +27,11 @@ export async function fetchPlacesReviews() {
     console.error('Erreur réseau :', error);
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//            displayPlacesReviews
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export async function displayPlacesReviews(reviews) {
   const reviewsList = document.getElementById('reviews');
@@ -52,14 +61,14 @@ export async function displayPlacesReviews(reviews) {
 
     reviewsWithUsers.forEach(review => {
       const card = document.createElement('article');
-      card.classList.add('review-card', 'col-lg-6');
+      card.classList.add('review-card');
 
       card.innerHTML = `
-        <div class="card h-100 border-0 shadow-sm">
-          <div class="card-body">
-            <p class="mb-2"><strong>User:</strong> ${review.userName}</p>
-            <p class="mb-2"><strong>Rating:</strong> ${review.rating}/5</p>
-            <p class="mb-0 text-secondary">${review.text}</p>
+        <div class="card">
+          <div class="card-content">
+            <p><strong>User:</strong> ${review.userName}</p>
+            <p><strong>Rating:</strong> ${review.rating}/5</p>
+            <p class="text-muted">${review.text}</p>
           </div>
         </div>
       `;
@@ -68,6 +77,11 @@ export async function displayPlacesReviews(reviews) {
     });
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                  reviewBtn
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export function reviewBtn() {
   const btn = document.getElementById('review-btn');
@@ -75,12 +89,17 @@ export function reviewBtn() {
 
   if (btn) {
     btn.innerHTML = `
-      <a class="btn btn-warning btn-lg" href="add_review.html?id=${placeId}">
+      <a class="button button--primary button--large" href="add_review.html?id=${placeId}">
         Add a review
       </a>
     `;
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//               setupStarRating
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export function setupStarRating() {
   const container = document.getElementById('rating-stars');
@@ -91,11 +110,16 @@ export function setupStarRating() {
   const stars = Array.from(container.querySelectorAll('span'));
   let selectedRating = 0;
 
+  // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+  //                 updateStars
+  // ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
   function updateStars(value) {
     stars.forEach((star, index) => {
       star.classList.toggle('active', index < value);
     });
   }
+  // #######################################
 
   stars.forEach((star, index) => {
     const starValue = index + 1;
@@ -115,6 +139,11 @@ export function setupStarRating() {
     updateStars(selectedRating);
   });
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                 updateStars
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 function updateStars(stars, value) {
   stars.forEach((star, index) => {
@@ -125,6 +154,11 @@ function updateStars(stars, value) {
     }
   });
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                  reviewAdd
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export function reviewAdd() {
   const reviewForm = document.getElementById('review-form');
@@ -139,6 +173,11 @@ export function reviewAdd() {
     });
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                submitReview
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export async function submitReview(token, placeId, reviewText, reviewForm) {
   try {
@@ -179,4 +218,4 @@ export async function submitReview(token, placeId, reviewText, reviewForm) {
     console.error(error);
   }
 }
-
+// #######################################

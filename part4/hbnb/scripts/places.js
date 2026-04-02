@@ -1,50 +1,93 @@
 import { getCookie, getPlaceIdFromURL } from './utils.js';
 
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                 fetchPlaces
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
 export async function fetchPlaces(token) {
-  try {
-    console.log('test');
+  try { // try to get places list
     const response = await fetch('http://127.0.0.1:5000/api/v1/places/', {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}` // send token if the user is authentified
       }
     });
-    if (!response.ok) {
+    if (!response.ok) { // if not response 200
       console.error('Erreur HTTP :', response.status);
       return;
     }
-
     const data = await response.json();
-    console.log(data);
-    displayPlaces(data);
-  } catch (error) {
+    displayPlaces(data); // send fetched data to diplay place for display
+
+  } catch (error) { // si fetch echoue
     console.error('Erreur réseau :', error);
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                displayPlaces
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+export function displayPlaces(places) {
+  const placesList = document.getElementById('places-list');
+
+  if (placesList) { // si y a une liste de place
+    placesList.innerHTML = ''; // on reset la place list actuelle
+
+    places.forEach(place => {
+      const card = document.createElement('article');
+      card.classList.add('place-card');
+      const imagePath = `images/places/${place.id}/1.png`; // on recup la première image de la place
+
+      card.innerHTML = `
+            <div class="card">
+              <img src="${imagePath || 'images/assets/placeholder.jpg'}"
+                  class="card-image"
+                  alt="Place image">
+
+              <div class="card-content">
+                <h3 class="card-title">${place.title}</h3>
+                <p class="text-muted">Price: ${place.price}€</p>
+                <a class="button button--primary card-action" href="place.html?id=${place.id}">View Details</a>
+              </div>
+            </div>
+        `;
+      card.dataset.price = place.price; // on met le price de la place en data pour le filtre
+
+      placesList.appendChild(card); // on ajoute la place a la liste et on ré-itter
+    });
+  }
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                 placeFilter
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export function placeFilter() {
   const priceFilter = document.getElementById('price-filter');
 
-  if (priceFilter) {
-    const prices = [10, 50, 100];
+  if (priceFilter) { // si il y a element pricefiltre
+    const prices = [10, 50, 100]; // les filtres selectionnables
 
-    const allOption = document.createElement('option');
+    const allOption = document.createElement('option');  // on crée un element allOption qui est l'element all 
     allOption.value = 'All';
     allOption.textContent = 'All';
     priceFilter.appendChild(allOption);
 
-    prices.forEach(price => {
+    prices.forEach(price => { // on crée toutes les autres options aka la liste prices
       const option = document.createElement('option');
       option.value = price;
       option.textContent = price;
       priceFilter.appendChild(option);
     });
 
-    priceFilter.addEventListener('change', (event) => {
-      const selectedPrice = event.target.value;
-      const placeCards = document.querySelectorAll('.place-card');
+    priceFilter.addEventListener('change', (event) => { // quand on change de filtre
+      const selectedPrice = event.target.value; // le filtre selectioné
+      const placeCards = document.querySelectorAll('.place-card'); // la liste de places
 
-      placeCards.forEach((card) => {
+      placeCards.forEach((card) => { // on check pour chaque places si la nuit est moins chere que la value du filtre
         const cardPrice = Number(card.dataset.price);
         if (selectedPrice === 'All') {
           card.style.display = 'block';
@@ -61,6 +104,11 @@ export function placeFilter() {
     });
   }
 }
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//              fetchPlacesDetails
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export async function fetchPlacesDetails() {
   const id = getPlaceIdFromURL();
@@ -80,15 +128,19 @@ export async function fetchPlacesDetails() {
     }
 
     const data = await response.json();
-    console.log(data);
-    displayPlacesDetails(data);
-    displayPlaceGallery(id);
+    displayPlacesDetails(data, id);
+
   } catch (error) {
     console.error('Erreur réseau :', error);
   }
 }
+// #######################################
 
-export function displayPlacesDetails(place) {
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             displayPlacesDetails
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+export function displayPlacesDetails(place, id) {
   const placesDetails = document.getElementById('place-details');
   console.log(placesDetails);
 
@@ -99,67 +151,57 @@ export function displayPlacesDetails(place) {
     details.classList.add('place-details');
 
     const amenitiesList = place.amenities
-      .map(a => a.name)
-      .join(', ');
+      .map(a => `<li>${a.name}</li>`)
+      .join('');
 
     details.innerHTML = `
-            <h1 class="display-6 fw-bold mb-4">${place.title}</h1>
-            <div class="place-info row g-3">
-              <div class="col-md-6">
-                <div class="info-chip"><strong>Host:</strong> ${place.owner.first_name}</div>
-              </div>
-              <div class="col-md-6">
-                <div class="info-chip"><strong>Price per night:</strong> ${place.price}€</div>
-              </div>
-              <div class="col-12">
-                <div class="info-chip"><strong>Description:</strong> ${place.description}</div>
-              </div>
-              <div class="col-12">
-                <div class="info-chip"><strong>Amenities:</strong> ${amenitiesList}</div>
-              </div>
+      <section id="place-gallery"></section>
+
+      <div class="place-detail-content">
+        <h1 class="place-title">${place.title}</h1>
+        <div class="info-grid">
+          <div>
+            <div class="info-chip"><strong>Host:</strong> ${place.owner.first_name}</div>
+          </div>
+          <div>
+            <div class="info-chip"><strong>Price per night:</strong> ${place.price}€</div>
+          </div>
+          <div>
+            <div class="info-chip"><strong>Description:</strong> ${place.description}</div>
+          </div>
+          <div>
+            <div class="info-chip">
+              <strong>Amenities:</strong>
+              <ul>
+                ${amenitiesList}
+              </ul>
             </div>
-        `;
+          </div>
+        </div>
+      </div>
+    `;
 
     placesDetails.appendChild(details);
+
+    displayPlaceGallery(id);
   }
 }
+// #######################################
 
-export function displayPlaces(places) {
-  const placesList = document.getElementById('places-list');
-
-  if (placesList) {
-    placesList.innerHTML = '';
-
-    places.forEach(place => {
-      const card = document.createElement('article');
-      card.classList.add('place-card', 'col-md-6', 'col-xl-4');
-      const imagePath = `images/places/${place.id}/1.png`;
-
-      card.innerHTML = `
-            <div class="card h-100 border-0 shadow-sm">
-              <img src="${imagePath || 'images/assets/placeholder.jpg'}"
-                  class="card-img-top"
-                  alt="Place image">
-
-              <div class="card-body d-flex flex-column">
-                <h3 class="h5 card-title">${place.title}</h3>
-                <p class="card-text text-secondary mb-4">Price: ${place.price}€</p>
-                <a class="btn btn-warning details-button mt-auto align-self-start" href="place.html?id=${place.id}">View Details</a>
-              </div>
-            </div>
-        `;
-      card.dataset.price = place.price;
-
-      placesList.appendChild(card);
-    });
-  }
-}
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             displayPlaceGallery
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export function displayPlaceGallery(placeId) {
   const gallery = document.getElementById('place-gallery');
-  const modalCarouselInner = document.getElementById('placeModalCarouselInner');
+  const lightbox = document.getElementById('placeImageModal');
+  const lightboxImage = document.getElementById('lightbox-image');
+  const lightboxStatus = document.getElementById('lightbox-status');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  const lightboxClose = document.getElementById('lightbox-close');
 
-  if (!gallery || !modalCarouselInner) return;
+  if (!gallery || !lightbox || !lightboxImage) return;
 
   const maxImages = 5;
   const imagePaths = [];
@@ -180,101 +222,114 @@ export function displayPlaceGallery(placeId) {
 
   Promise.all(preloadPromises).then(validImages => {
     const existingImages = validImages.filter(path => path !== null);
+    let currentIndex = 0;
 
-    if (existingImages.length === 0) {
+    const renderGallery = () => {
       gallery.innerHTML = `
-        <div class="card border-0 shadow-sm">
-          <img src="images/assets/placeholder.jpg" class="w-100 place-gallery-img" alt="No image available">
+        <div class="gallery">
+          <div class="gallery-track">
+            ${existingImages.map((path, index) => `
+              <figure class="gallery-slide ${index === currentIndex ? 'is-active' : ''}">
+                <img
+                  src="${path}"
+                  class="gallery-image"
+                  alt="Place image ${index + 1}"
+                  data-index="${index}"
+                >
+              </figure>
+            `).join('')}
+          </div>
+          ${existingImages.length > 1 ? `
+            <button class="gallery-nav gallery-nav--prev" type="button" aria-label="Previous image">‹</button>
+            <button class="gallery-nav gallery-nav--next" type="button" aria-label="Next image">›</button>
+          ` : ''}
         </div>
       `;
 
-      modalCarouselInner.innerHTML = `
-        <div class="carousel-item active">
-          <img src="images/assets/placeholder.jpg" class="d-block w-100 place-modal-img" alt="No image available">
+      const currentImage = gallery.querySelector(`.gallery-image[data-index="${currentIndex}"]`);
+      if (currentImage) {
+        currentImage.addEventListener('click', () => openLightbox(currentIndex));
+      }
+
+      const prevButton = gallery.querySelector('.gallery-nav--prev');
+      const nextButton = gallery.querySelector('.gallery-nav--next');
+
+      if (prevButton) {
+        prevButton.addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + existingImages.length) % existingImages.length;
+          renderGallery();
+        });
+      }
+
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % existingImages.length;
+          renderGallery();
+        });
+      }
+    };
+
+    const syncLightbox = () => {
+      lightboxImage.src = existingImages[currentIndex];
+      lightboxImage.alt = `Place image ${currentIndex + 1}`;
+      if (lightboxStatus) {
+        lightboxStatus.textContent = `Image ${currentIndex + 1} of ${existingImages.length}`;
+      }
+    };
+
+    const openLightbox = (index) => {
+      currentIndex = index;
+      syncLightbox();
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    if (existingImages.length === 0) {
+      gallery.innerHTML = `
+        <div class="card">
+          <img src="images/assets/placeholder.jpg" class="gallery-image" alt="No image available">
         </div>
       `;
       return;
     }
 
-    gallery.innerHTML = `
-      <div id="placeCarousel" class="carousel slide shadow-sm rounded overflow-hidden">
-        <div class="carousel-inner">
-          ${existingImages.map((path, index) => `
-            <div class="carousel-item ${index === 0 ? 'active' : ''}">
-              <img
-                src="${path}"
-                class="d-block w-100 place-gallery-img gallery-clickable"
-                alt="Place image ${index + 1}"
-                data-index="${index}"
-              >
-            </div>
-          `).join('')}
-        </div>
+    renderGallery();
+    syncLightbox();
 
-        ${existingImages.length > 1 ? `
-          <button class="carousel-control-prev" type="button" data-bs-target="#placeCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
+    lightboxPrev.onclick = () => {
+      currentIndex = (currentIndex - 1 + existingImages.length) % existingImages.length;
+      syncLightbox();
+      renderGallery();
+    };
 
-          <button class="carousel-control-next" type="button" data-bs-target="#placeCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        ` : ''}
-      </div>
-    `;
+    lightboxNext.onclick = () => {
+      currentIndex = (currentIndex + 1) % existingImages.length;
+      syncLightbox();
+      renderGallery();
+    };
 
-    modalCarouselInner.innerHTML = `
-      ${existingImages.map((path, index) => `
-        <div class="carousel-item ${index === 0 ? 'active' : ''}">
-          <div class="place-modal-slide">
-            <img
-              src="${path}"
-              class="d-block place-modal-img"
-              alt="Place image ${index + 1}"
-            >
-          </div>
-        </div>
-      `).join('')}
-    `;
+    lightboxClose.onclick = closeLightbox;
 
-    if (window.bootstrap) {
-      const mainCarouselElement = document.getElementById('placeCarousel');
-      if (mainCarouselElement && existingImages.length > 1) {
-        new bootstrap.Carousel(mainCarouselElement, {
-          interval: false,
-          ride: false
-        });
+    lightbox.onclick = (event) => {
+      if (event.target === lightbox) {
+        closeLightbox();
       }
+    };
 
-      const modalCarouselElement = document.getElementById('placeModalCarousel');
-      const modalElement = document.getElementById('placeImageModal');
+    document.onkeydown = (event) => {
+      if (!lightbox.classList.contains('is-open')) return;
 
-      let modalCarouselInstance = null;
-
-      if (modalCarouselElement) {
-        modalCarouselInstance = new bootstrap.Carousel(modalCarouselElement, {
-          interval: false,
-          ride: false
-        });
-      }
-
-      const modalInstance = new bootstrap.Modal(modalElement);
-
-      const clickableImages = document.querySelectorAll('.gallery-clickable');
-
-      clickableImages.forEach((img) => {
-        img.addEventListener('click', () => {
-          const clickedIndex = Number(img.dataset.index);
-
-          modalInstance.show();
-
-          if (modalCarouselInstance) {
-            modalCarouselInstance.to(clickedIndex);
-          }
-        });
-      });
-    }
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') lightboxPrev.onclick();
+      if (event.key === 'ArrowRight') lightboxNext.onclick();
+    };
   });
 }
+// #######################################

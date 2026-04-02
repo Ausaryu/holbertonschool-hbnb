@@ -1,0 +1,16 @@
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-panel {
+  width: min(100%, 520px);
+  padding: 2rem;
+}
+
+.auth-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}

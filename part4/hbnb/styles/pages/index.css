@@ -1,0 +1,24 @@
+.home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.home-hero-title {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  margin-bottom: 0.9rem;
+}
+
+.filter-panel {
+  padding: 1.3rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 900px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+}

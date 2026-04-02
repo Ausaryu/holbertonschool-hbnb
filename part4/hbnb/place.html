@@ -5,121 +5,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Place Details</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="icon" href="images/assets/favicon.ico" type="image/ico">
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/pages/place.css">
   <script type="module" src="scripts/main.js"></script>
 </head>
 
-<div class="modal fade" id="placeImageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content bg-dark border-0 position-relative">
-
-        <button type="button" class="btn-close btn-close-white modal-close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
-
-
-      <div class="modal-body p-0">
-        <div id="placeModalCarousel" class="carousel slide">
-          <div class="carousel-inner" id="placeModalCarouselInner">
-          </div>
-
-          <button class="carousel-control-prev" type="button" data-bs-target="#placeModalCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-
-          <button class="carousel-control-next" type="button" data-bs-target="#placeModalCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <body>
-  <header class="site-header shadow-sm">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container py-1">
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold text-white m-0" href="index.html">
+  <header class="site-header">
+    <div class="site-container">
+      <nav class="site-nav">
+        <a class="site-brand" href="index.html">
           <img src="images/assets/logo.png" alt="Hbnb logo" class="site-logo">
           <span>Hbnb</span>
         </a>
-        <div class="d-flex align-items-center gap-2 ms-auto">
-          <a href="index.html" class="btn btn-light btn-sm">Home</a>
-          <a href="login.html" id="login-link" class="btn btn-outline-light btn-sm">Login</a>
-          <button id="logout" class="btn btn-dark btn-sm" type="button">Logout</button>
+        <div class="site-actions">
+          <a href="index.html" class="button button--light">Home</a>
+          <a href="login.html" id="login-link" class="button button--ghost">Login</a>
+          <button id="logout" class="button button--ghost" type="button">Logout</button>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   </header>
 
-  <main class="py-5">
-    <section class="container">
-
-      <section id="place-gallery" class="mb-4">
-      </section>
-
-      <section id="place-details" class="detail-panel p-4 p-lg-5 mb-4">
-        <h1 class="display-6 fw-bold mb-4">PlaceHolder</h1>
-
-        <div class="place-info row g-3">
-          <div class="col-md-6">
-            <div class="info-chip"><strong>Host:</strong> Alice</div>
+  <main class="place-page">
+    <section id="place-details" class="panel place-detail">
+      <section id="place-gallery"></section>
+      <div class="place-detail-content">
+        <h1 class="place-title">N/A</h1>
+        <div class="info-grid">
+          <div>
+            <div class="info-chip"><strong>Host:</strong> N/A</div>
           </div>
-          <div class="col-md-6">
-            <div class="info-chip"><strong>Price per night:</strong> $120</div>
+          <div>
+            <div class="info-chip"><strong>Price per night:</strong> N/A</div>
           </div>
-          <div class="col-12">
-            <div class="info-chip"><strong>Description:</strong> A cozy apartment in the city center.</div>
+          <div>
+            <div class="info-chip"><strong>Description:</strong> N/A</div>
           </div>
-          <div class="col-12">
-            <div class="info-chip"><strong>Amenities:</strong> Wi-Fi, Kitchen, Air conditioning</div>
+          <div>
+            <div class="info-chip">
+              <strong>Amenities:</strong>
+              <ul>
+                <li>N/A</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="mb-4">
-        <h2 class="h3 mb-3">Reviews</h2>
-        <section id="reviews" class="row g-4">
-          <!-- Reviews will be populated dynamically -->
-          <article class="review-card col-lg-6">
-            <div class="card h-100 border-0 shadow-sm">
-              <div class="card-body">
-                <p class="mb-2"><strong>User:</strong> John</p>
-                <p class="mb-2"><strong>Rating:</strong> 5/5</p>
-                <p class="mb-0 text-secondary">Amazing place, very clean and comfortable.</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="review-card col-lg-6">
-            <div class="card h-100 border-0 shadow-sm">
-              <div class="card-body">
-                <p class="mb-2"><strong>User:</strong> Emma</p>
-                <p class="mb-2"><strong>Rating:</strong> 4/5</p>
-                <p class="mb-0 text-secondary">Very nice stay, great location.</p>
+    <section class="page-stack">
+      <section class="review-part">
+        <h2 class="section-title">Reviews</h2>
+        <section id="reviews" class="cards-grid">
+          <article class="review-card">
+            <div class="card">
+              <div class="card-content">
+                <p><strong>User:</strong> N/A</p>
+                <p><strong>Rating:</strong> N/A</p>
+                <p class="text-muted">N/A</p>
               </div>
             </div>
           </article>
         </section>
+        <section id="review-btn" class="review-actions"></section>
       </section>
-      <section id="review-btn">
-      </section>
+    </section>
   </main>
 
-  <footer class="site-footer py-4 mt-auto">
-    <div class="container text-center text-secondary">
-      <p class="mb-0">© 2026 Cosmic Corp. All rights reserved. Exploring ideas beyond the stars.</p>
+  <div class="lightbox" id="placeImageModal" aria-hidden="true">
+    <div class="lightbox-content">
+      <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">×</button>
+      <button type="button" class="lightbox-nav lightbox-nav--prev" id="lightbox-prev"
+        aria-label="Previous image">‹</button>
+      <img id="lightbox-image" class="lightbox-image" src="" alt="Place image">
+      <button type="button" class="lightbox-nav lightbox-nav--next" id="lightbox-next"
+        aria-label="Next image">›</button>
+      <p id="lightbox-status" class="visually-hidden" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-container">
+      <p class="text-muted">© 2026 Cosmic Corp. All rights reserved. Exploring ideas beyond the stars.</p>
     </div>
   </footer>
-
 </body>
 
 </html>

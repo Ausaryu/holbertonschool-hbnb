@@ -1,0 +1,15 @@
+.review-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-form-panel {
+  width: min(100%, 720px);
+  padding: 2rem;
+}
+
+.review-form-title {
+  font-size: 2rem;
+  margin-bottom: 1.3rem;
+}
