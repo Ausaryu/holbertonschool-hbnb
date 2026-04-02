@@ -229,16 +229,17 @@ function displayPlaces(places) {
     places.forEach(place => {
       const card = document.createElement("article");
       card.classList.add("place-card", "col-md-6", "col-xl-4");
+      const imagePath = `images/places/${place.id}/1.png`;
 
       card.innerHTML = `
             <div class="card h-100 border-0 shadow-sm">
-              <img src="${place.image || 'images/placeholder.jpg'}"
+              <img src="${imagePath || 'images/assets/placeholder.jpg'}"
                   class="card-img-top"
                   alt="Place image">
 
               <div class="card-body d-flex flex-column">
                 <h3 class="h5 card-title">${place.title}</h3>
-                <p class="card-text text-secondary mb-4">Price: $${place.price}</p>
+                <p class="card-text text-secondary mb-4">Price: ${place.price}€</p>
                 <a class="btn btn-warning details-button mt-auto align-self-start" href="place.html?id=${place.id}">View Details</a>
               </div>
             </div>
