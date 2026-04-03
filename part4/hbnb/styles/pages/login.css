@@ -2,6 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .auth-panel {

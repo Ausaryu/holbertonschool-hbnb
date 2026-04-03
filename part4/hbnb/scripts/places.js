@@ -166,7 +166,7 @@ export function displayPlacesDetails(place, id) {
         <h1 class="place-title">${place.title}</h1>
         <div class="info-grid">
           <div>
-            <div class="info-chip"><strong>Host:</strong> ${place.owner.first_name}</div>
+            <div class="info-chip"><strong>Host:</strong> ${place.owner.first_name} ${place.owner.last_name}</div>
           </div>
           <div>
             <div class="info-chip"><strong>Price per night:</strong> ${place.price}€</div>

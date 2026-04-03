@@ -22,9 +22,11 @@ export async function fetchPlacesReviews() {
 
     const data = await response.json();
     console.log(data);
+    reviewBtn(data);
     displayPlacesReviews(data);
   } catch (error) {
     console.error('Erreur réseau :', error);
+    reviewBtn([]);
   }
 }
 // #######################################
@@ -95,17 +97,32 @@ export async function displayPlacesReviews(reviews) {
 //                  reviewBtn
 // ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
-export function reviewBtn() {
+export function reviewBtn(reviews = []) {
   const btn = document.getElementById('review-btn');
   const placeId = getIdFromURL();
+  const token = getCookie('token');
 
-  if (btn) {
-    btn.innerHTML = `
-      <a class="button button--primary button--large" href="add_review.html?id=${placeId}">
-        Add a review
-      </a>
-    `;
+  if (!btn) {
+    return;
   }
+
+  if (!token) {
+    btn.innerHTML = '';
+    return;
+  }
+
+  const hasEditableReview = reviews.some((review) => review.can_edit);
+
+  if (hasEditableReview) {
+    btn.innerHTML = '';
+    return;
+  }
+
+  btn.innerHTML = `
+    <a class="button button--primary button--large" href="add_review.html?id=${placeId}">
+      Add a review
+    </a>
+  `;
 }
 // #######################################
 

@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path.includes('place.html')) {
     fetchPlacesDetails();
     fetchPlacesReviews();
-    reviewBtn();
   }
 
   // ─────────── ADD REVIEW ───────────

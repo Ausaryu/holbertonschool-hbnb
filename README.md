@@ -14,6 +14,7 @@
 - [Assumptions & Design Decisions](#6️⃣-assumptions--design-decisions)
 - [Conclusion](#7️⃣-conclusion)
 - [Part 2 — Implementation](#-part-2--implementation-of-business-logic--rest-api)
+- [Part 4 — Front-End Web Client](#-part-4--front-end-web-client)
 - [Authors](#-authors)
 
 ---
@@ -28,6 +29,8 @@ It consolidates:
 - Business Logic design
 - API interaction sequence diagrams
 - Design decisions and applied principles
+- Back-end implementation progress
+- Front-end web client delivery
 
 The objective is to ensure clarity, strict alignment with project requirements, and readiness for implementation in subsequent phases.
 
@@ -579,7 +582,8 @@ Includes:
 |------|--------|
 | Part 1 | Architecture & UML Design |
 | Part 2 | Business Logic + REST API (In-Memory) |
-| Part 3 | SQLAlchemy + JWT + RBAC (Next) |
+| Part 3 | SQLAlchemy + JWT + RBAC |
+| Part 4 | Front-End Web Client |
 
 ---
 
@@ -609,6 +613,105 @@ part2/
 │   └── facade.py
 │
 └── run.py
+```
+
+---
+
+## 💻 Part 4 — Front-End Web Client
+
+## 📌 Overview
+
+Part 4 adds the browser client for **HBnB Evolution**.
+This layer provides a user-facing interface built with **HTML**, **CSS**, and **vanilla JavaScript**, connected to the REST API exposed by the previous parts.
+
+The objective of Part 4 is to make the application usable from a browser by implementing:
+
+- user authentication from a login page
+- dynamic listing of places
+- price-based filtering
+- place detail display
+- review creation, edition, and deletion
+
+---
+
+### 🧱 Front-End Pages
+
+Implemented:
+
+- `index.html` for the places list
+- `login.html` for authentication
+- `place.html` for detailed place information
+- `add_review.html` for creating a review
+- `edit_review.html` for updating or deleting a review
+
+---
+
+### ⚙ Front-End JavaScript Modules
+
+- `main.js` initializes page-specific behavior
+- `auth.js` manages login, logout, and token handling
+- `places.js` fetches places, displays cards, filters by price, and renders place details
+- `reviews.js` fetches and manages reviews, including add/edit/delete flows
+- `utils.js` provides cookie and URL helpers
+
+---
+
+### 🌐 API Integration
+
+The front-end consumes the API under:
+
+```text
+http://127.0.0.1:5000/api/v1/
+```
+
+Main endpoints used:
+
+- `POST /auth/login`
+- `GET /places/`
+- `GET /places/<id>`
+- `GET /places/<id>/reviews`
+- `GET /users/<id>`
+- `GET /reviews/<id>`
+- `POST /reviews/`
+- `PUT /reviews/<id>`
+- `DELETE /reviews/<id>`
+
+Authentication is handled with a JWT access token stored in browser cookies and sent through the `Authorization: Bearer <token>` header.
+
+---
+
+### ▶ Running Part 4
+
+Start the back-end API first, then serve the front-end locally:
+
+```bash
+cd part4/hbnb
+python3 -m http.server 8000
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/index.html
+```
+
+---
+
+### 📂 Repository Structure (Part 4)
+
+```text
+part4/
+├── README.md
+├── AUTHORS
+└── hbnb/
+    ├── index.html
+    ├── login.html
+    ├── place.html
+    ├── add_review.html
+    ├── edit_review.html
+    ├── scripts/
+    ├── styles/
+    └── images/
 ```
 
 ---
