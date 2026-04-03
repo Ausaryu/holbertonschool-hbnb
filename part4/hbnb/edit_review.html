@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Review</title>
+  <link rel="icon" href="images/assets/favicon.ico" type="image/ico">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/pages/add-review.css">
+  <script type="module" src="scripts/main.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="site-container">
+      <nav class="site-nav">
+        <a class="site-brand" href="index.html">
+          <img src="images/assets/logo.png" alt="Hbnb logo" class="site-logo">
+          <span>Hbnb</span>
+        </a>
+        <div class="site-actions">
+          <a href="index.html" class="button button--light">Home</a>
+          <a href="login.html" id="login-link" class="button button--ghost">Login</a>
+          <button id="logout" class="button button--ghost" type="button">Logout</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="review-page">
+    <section id="edit-review" class="panel review-form-panel">
+      <h2 class="review-form-title">Edit Your Review</h2>
+      <form id="review-form">
+        <div class="field">
+          <label for="rating" class="field-label">Rating</label>
+          <div id="rating-stars" class="rating-stars">
+            <span data-value="1">★</span>
+            <span data-value="2">★</span>
+            <span data-value="3">★</span>
+            <span data-value="4">★</span>
+            <span data-value="5">★</span>
+          </div>
+
+          <input type="hidden" id="rating" value="">
+        </div>
+
+        <div class="field">
+          <label for="review-text" class="field-label">Your review</label>
+          <textarea id="review-text" name="review-text" class="textarea" rows="5" required></textarea>
+        </div>
+
+        <div class="field">
+          <button type="submit" class="button button--primary">Update Review</button>
+          <button type="button" id="delete-review" class="button button--danger">Delete</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-container">
+      <p class="text-muted">© 2026 Cosmic Corp. All rights reserved. Exploring ideas beyond the stars.</p>
+    </div>
+  </footer>
+</body>
+
+</html>

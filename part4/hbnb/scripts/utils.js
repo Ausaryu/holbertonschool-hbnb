@@ -21,10 +21,10 @@ export function getCookie (name) {
 // #######################################
 
 // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
-//             getPlaceIdFromURL
+//             getIdFromURL
 // ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
-export function getPlaceIdFromURL () {
+export function getIdFromURL () {
   const params = new URLSearchParams(window.location.search); //transform url param into a dict object
   const id = params.get('id'); //get id from the converted dict
   return id;

@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, verify_jwt_in_request
 from app.services import facade
 
 api = Namespace('reviews', description='Review operations')
@@ -17,15 +17,22 @@ review_update_model = api.model('ReviewUpdate', {
 })
 
 
-def marshal_review(review):
-    return {
-        "id":       review.id,
-        "text":     review.text,
-        "rating":   review.rating,
-        "user_id":  review.user.id,
-        "place_id": review.place.id
-    }
+def marshal_review(review, current_user_id=None, is_admin=False):
+    can_edit = False
 
+    if current_user_id:
+        if review.user.id == current_user_id:
+            can_edit = True
+
+    return {
+        "id": review.id,
+        "text": review.text,
+        "rating": review.rating,
+        "user_id": review.user.id,
+        "place_id": review.place.id,
+        "is_admin": is_admin,
+        "can_edit": can_edit
+    }
 
 def validate_review_payload(data):
     if not data:
@@ -59,7 +66,22 @@ class ReviewList(Resource):
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
         """Retrieve all reviews (public)"""
-        return [marshal_review(r) for r in facade.get_all_reviews()], 200
+
+        current_user_id = None
+        is_admin = False
+
+        try:
+            verify_jwt_in_request(optional=True)
+            current_user_id = get_jwt_identity()
+            claims = get_jwt()
+            is_admin = claims.get("is_admin", False)
+        except:
+            pass
+
+        return [
+            marshal_review(r, current_user_id, is_admin)
+            for r in facade.get_all_reviews()
+        ], 200
 
     @jwt_required()
     @api.doc(security='BearerAuth')

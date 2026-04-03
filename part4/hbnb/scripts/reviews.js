@@ -1,11 +1,11 @@
-import { getCookie, getPlaceIdFromURL } from './utils.js';
+import { getCookie, getIdFromURL } from './utils.js';
 
 // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
 //             fetchPlacesReviews
 // ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export async function fetchPlacesReviews() {
-  const id = getPlaceIdFromURL();
+  const id = getIdFromURL();
   const token = getCookie('token');
   try {
     console.log('test');
@@ -39,6 +39,11 @@ export async function displayPlacesReviews(reviews) {
   if (reviewsList) {
     reviewsList.innerHTML = '';
 
+    if (!reviews || reviews.length === 0) {
+      reviewsList.innerHTML = '<p class="text-muted">No reviews yet for this place.</p>';
+      return;
+    }
+
     const reviewsWithUsers = await Promise.all(
       reviews.map(async (review) => {
         try {
@@ -69,9 +74,16 @@ export async function displayPlacesReviews(reviews) {
             <p><strong>User:</strong> ${review.userName}</p>
             <p><strong>Rating:</strong> ${review.rating}/5</p>
             <p class="text-muted">${review.text}</p>
+            <div class="edit-review-btn"></div>
           </div>
         </div>
       `;
+
+      console.log(review)
+      if (review.is_admin || review.can_edit) {
+        const BtnContainer = card.querySelector('.edit-review-btn')
+        editReviewBtn(BtnContainer, review)
+      }
 
       reviewsList.appendChild(card);
     });
@@ -85,7 +97,7 @@ export async function displayPlacesReviews(reviews) {
 
 export function reviewBtn() {
   const btn = document.getElementById('review-btn');
-  const placeId = getPlaceIdFromURL();
+  const placeId = getIdFromURL();
 
   if (btn) {
     btn.innerHTML = `
@@ -93,6 +105,172 @@ export function reviewBtn() {
         Add a review
       </a>
     `;
+  }
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//                  reviewBtn
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+export function editReviewBtn(btn, review) {
+  if (btn) {
+    btn.innerHTML = `
+      <a class="button button--primary button--large" href="edit_review.html?id=${review.id}">
+        edit
+      </a>
+    `;
+  }
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//           fetchReviewDetails
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+export async function fetchReviewDetails() {
+  const reviewId = getIdFromURL();
+
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/reviews/${reviewId}`);
+    
+    if (!response.ok) {
+      console.error("Erreur fetch review");
+      return;
+    }
+
+    const review = await response.json();
+    fillReviewForm(review);
+    return review;
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+// #######################################
+
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             fillReviewForm
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+function fillReviewForm(review) {
+  const reviewText = document.getElementById('review-text');
+  const rating = document.getElementById('rating');
+
+  if (!reviewText || !rating) return;
+
+  reviewText.value = review.text;
+  rating.value = review.rating;
+
+  const stars = document.querySelectorAll('#rating-stars span');
+
+  stars.forEach((star, index) => {
+    star.classList.toggle('active', index < review.rating);
+  });
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             updateReview
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+async function updateReview(token, reviewId, placeId) {
+  const reviewText = document.getElementById('review-text');
+  const ratingInput = document.getElementById('rating');
+
+  if (!reviewText || !ratingInput) return;
+
+  const text = reviewText.value.trim();
+  const rating = Number(ratingInput.value);
+
+  if (!text || !rating) {
+    console.error('Review text or rating is missing');
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/reviews/${reviewId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ text, rating })
+    });
+
+    if (response.ok) {
+      window.location.href = `place.html?id=${placeId}`;
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//             deleteReview
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+async function deleteReview(token, reviewId, placeId) {
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (response.ok) {
+      window.location.href = `place.html?id=${placeId}`;
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+// #######################################
+
+// ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
+//            setupEditReviewForm
+// ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
+
+export async function setupEditReviewForm() {
+  const token = getCookie('token');
+  const reviewId = getIdFromURL();
+  const form = document.getElementById('review-form');
+  const deleteBtn = document.getElementById('delete-review');
+
+  if (!token) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  if (!reviewId) {
+    console.error('Review id missing in URL');
+    return;
+  }
+
+  const review = await fetchReviewDetails();
+
+  if (!review || !review.place_id) {
+    console.error('Associated place id missing for review');
+    return;
+  }
+
+  setupStarRating();
+
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      updateReview(token, reviewId, review.place_id);
+    });
+  }
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      deleteReview(token, reviewId, review.place_id);
+    });
   }
 }
 // #######################################
@@ -108,7 +286,7 @@ export function setupStarRating() {
   if (!container || !ratingInput) return;
 
   const stars = Array.from(container.querySelectorAll('span'));
-  let selectedRating = 0;
+  let selectedRating = Number(ratingInput.value) || 0;
 
   // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
   //                 updateStars
@@ -138,6 +316,8 @@ export function setupStarRating() {
   container.addEventListener('mouseleave', () => {
     updateStars(selectedRating);
   });
+
+  updateStars(selectedRating);
 }
 // #######################################
 
@@ -163,7 +343,7 @@ function updateStars(stars, value) {
 export function reviewAdd() {
   const reviewForm = document.getElementById('review-form');
   const token = getCookie('token');
-  const placeId = getPlaceIdFromURL();
+  const placeId = getIdFromURL();
 
   if (reviewForm) {
     reviewForm.addEventListener('submit', async (event) => {

@@ -1,4 +1,4 @@
-import { getCookie, getPlaceIdFromURL } from './utils.js';
+import { getCookie, getIdFromURL } from './utils.js';
 
 // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
 //                 fetchPlaces
@@ -34,6 +34,11 @@ export function displayPlaces(places) {
 
   if (placesList) { // si y a une liste de place
     placesList.innerHTML = ''; // on reset la place list actuelle
+
+    if (!places || places.length === 0) {
+      placesList.innerHTML = '<p class="text-muted">No places available for now.</p>';
+      return;
+    }
 
     places.forEach(place => {
       const card = document.createElement('article');
@@ -111,7 +116,7 @@ export function placeFilter() {
 // ⣿⣿⣿⣷⣶⣶⣶⣦⣤⣤⣤⣄⣀⣀⣀⣀⣠⣤⣤⣤⣴⣶⣶⣶⣾⣿⣿⣿
 
 export async function fetchPlacesDetails() {
-  const id = getPlaceIdFromURL();
+  const id = getIdFromURL();
   const token = getCookie('token');
 
   try {

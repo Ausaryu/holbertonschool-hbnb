@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, verify_jwt_in_request
 
 api = Namespace('places', description='Place operations')
 
@@ -54,6 +54,36 @@ def marshal_place(place):
         "amenities": [{"id": a.id, "name": a.name} for a in place.amenities]
     }
 
+def get_optional_auth_context():
+    current_user_id = None
+    is_admin = False
+
+    try:
+        verify_jwt_in_request(optional=True)
+        current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get("is_admin", False)
+    except:
+        pass
+
+    return current_user_id, is_admin
+
+def marshal_place_review(review, current_user_id=None, is_admin=False):
+    can_edit = False
+
+    if current_user_id:
+        if review.user.id == current_user_id:
+            can_edit = True
+
+    return {
+        "id": review.id,
+        "text": review.text,
+        "rating": review.rating,
+        "user_id": review.user.id,
+        "place_id": review.place.id,
+        "is_admin": is_admin,
+        "can_edit": can_edit
+    }
 
 @api.route('/')
 class PlaceList(Resource):
@@ -158,11 +188,11 @@ class PlaceReviewList(Resource):
         """Get all reviews for a specific place"""
         if not facade.get_place(place_id):
             api.abort(404, "Place not found")
+
+        current_user_id, is_admin = get_optional_auth_context()
         reviews = facade.get_reviews_by_place(place_id)
-        return [{
-            "id": r.id,
-            "text": r.text,
-            "rating": r.rating,
-            "user_id": r.user.id,
-            "place_id": r.place.id
-        } for r in reviews], 200
+
+        return [
+            marshal_place_review(r, current_user_id, is_admin)
+            for r in reviews
+        ], 200

@@ -137,6 +137,18 @@
   right: 1rem;
 }
 
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.edit-review-btn {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
 @media (max-width: 768px) {
   .place-detail-content,
   .review-form-panel,

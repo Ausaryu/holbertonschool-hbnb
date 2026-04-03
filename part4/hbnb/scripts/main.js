@@ -1,6 +1,6 @@
 import { checkAuthentication, logout, setupLoginForm } from './auth.js';
 import { placeFilter, fetchPlacesDetails } from './places.js';
-import { fetchPlacesReviews, reviewAdd, reviewBtn, setupStarRating } from './reviews.js';
+import { fetchPlacesReviews, reviewAdd, reviewBtn, setupStarRating, setupEditReviewForm } from './reviews.js';
 
 // ⣿⣿⣿⡿⠿⠿⠿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠙⠛⠛⠛⠻⠿⠿⠿⢿⣿⣿⣿
 //                  Main
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logout');
 
   // ─────────── GLOBAL ───────────
-  
+
   checkAuthentication();
 
   if (logoutBtn) {
@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ─────────── HOME ───────────
   if (path.includes('index.html')) {
-  placeFilter();
+    placeFilter();
   }
 
   // ─────────── LOGIN ───────────
   if (path.includes('login.html')) {
-  setupLoginForm();
+    setupLoginForm();
   }
 
   // ─────────── PLACE DETAILS ───────────
@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path.includes('add_review.html')) {
     reviewAdd();
     setupStarRating();
+  }
+
+  if (path.includes('edit_review.html')) {
+    setupEditReviewForm();
   }
 });
 // #######################################
